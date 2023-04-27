@@ -37,7 +37,10 @@ def cifrar_AES(texto_plano: str, clave: str = "PASE") -> tuple:
         return texto_cifrado, cipher.iv
 
     except AttributeError: mb.showerror("Error", "La información a codificar debe ser un string")
-    except Exception as e:print(e)
+    except Exception as e:
+        print(e)
+        mb.showerror("Error", f"Error al encriptar, intente nuevamente, si el error persiste contacte a un adminsitrador y muestre el siguiente mensaje de error:\n{e}.")
+
 
 
 def descifrar_AES(texto_cifrado: str, iv: bytes, clave: str = "PASE") -> str:
@@ -77,7 +80,7 @@ def descifrar_AES(texto_cifrado: str, iv: bytes, clave: str = "PASE") -> str:
 
     except Exception as e:
         print(e)
-        mb.showerror("Error", "La información a decifrar es incorrecta.")
+        mb.showerror("Error", f"Error al desencriptar, intente nuevamente, si el error persiste contacte a un adminsitrador y muestre el siguiente mensaje de error:\n{e}.")
         return None
 
 
@@ -98,6 +101,9 @@ img = qrcode.make(imgqr)
 # Mostrar imagen reducida.show()
 # Guardar imagen obtenida con el formato PNG
 img.save("reducida.png")
+f = open("reducida.png", "wb")
+img.save(f)
+f.close()
 
 
 folio_cifrado = imgqr[0]
@@ -112,4 +118,4 @@ texto_descifrado = descifrar_AES(texto_cifrado = folio_cifrado, iv = vector)
 print(f"Folio desifrado: {texto_descifrado}")
 
 if folio == texto_descifrado: print("DESIFRADO CORRECTO")
-
+else: print("Cifrado incorrecto")
