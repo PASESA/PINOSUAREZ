@@ -78,7 +78,7 @@ class Fullscreen_Example:
                    ##Cerrar la ventana
                    self.quitF()
                    from cobroFO import FormularioOperacion       
-                   FormularioOperacion(self)
+                   FormularioOperacion()
                    
 
                 else:

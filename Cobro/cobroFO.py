@@ -88,6 +88,11 @@ class FormularioOperacion:
         masuno = int(n1)+int(n2)
         masuno = str(masuno)
         self.MaxId.set(masuno)
+
+        folio_cifrado, iv = self.operacion1.cifrar_AES(texto_plano = masuno)
+        imgqr = tuple((folio_cifrado, iv))
+        print(imgqr)
+
         fechaEntro = datetime.today()
         horaentrada = str(fechaEntro)
         horaentrada=horaentrada[:18]
@@ -98,7 +103,7 @@ class FormularioOperacion:
         # hacer la foto de codigo qr
         #img = qrcode.make("2 de septiembre")
         fSTR=str(fechaEntro)
-        imgqr=(fSTR + masuno)
+        #imgqr=(fSTR + masuno)
         #img = qrcode.make(fechaEntro)
         img = qrcode.make(imgqr)
         # Obtener imagen con el tamaño indicado
@@ -344,14 +349,20 @@ class FormularioOperacion:
     def consultar(self,event):
         global ban
         ban = 0
-        datos=str(self.folio.get(), )
-        if len(datos) > 20:#con esto revisamos si lee el folio o la promocion
-            datos=datos[26:]
-            datos=int(datos)
-            datos=str(datos)
-            self.folio.set(datos)
-            datos=(self.folio.get(), )
-            respuesta=self.operacion1.consulta(datos)
+        datos=str(self.folio.get())
+        # print(f"Escaneo: {datos}")
+        # print(f"Tamaño: {len(datos)}")
+
+        if len(datos) > 60:
+            datos = eval(datos)
+            
+            folio_cifrado = datos[0]
+            vector = datos[1]
+
+            folio = self.operacion1.descifrar_AES(texto_cifrado = folio_cifrado, iv = vector)
+            print(f"\nFolio descifrado: {folio}")
+
+            respuesta=self.operacion1.consulta(folio)
             if len(respuesta)>0:
                 self.descripcion.set(respuesta[0][0])
                 self.precio.set(respuesta[0][1])
@@ -360,6 +371,22 @@ class FormularioOperacion:
                 self.descripcion.set('')
                 self.precio.set('')
                 mb.showinfo("Información", "No existe un auto con dicho código")
+
+        # elif len(datos) > 20:#con esto revisamos si lee el folio o la promocion
+        #     datos=datos[26:]
+        #     datos=int(datos)
+        #     datos=str(datos)
+        #     self.folio.set(datos)
+        #     datos=(self.folio.get(), )
+        #     respuesta=self.operacion1.consulta(datos)
+        #     if len(respuesta)>0:
+        #         self.descripcion.set(respuesta[0][0])
+        #         self.precio.set(respuesta[0][1])
+        #         self.CalculaPermanencia()#nos vamos a la funcion de calcular permanencia
+        #     else:
+        #         self.descripcion.set('')
+        #         self.precio.set('')
+        #         mb.showinfo("Información", "No existe un auto con dicho código")
         else:
             mb.showinfo("Promocion", "leer primero el folio")
             self.folio.set("")

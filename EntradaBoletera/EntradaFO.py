@@ -179,6 +179,11 @@ class FormularioOperacion:
         masuno = int(n1)+int(n2)
         masuno = str(masuno)
         self.MaxId.set(masuno)
+
+        folio_cifrado, iv = self.operacion1.cifrar_AES(texto_plano = masuno)
+        imgqr = tuple((folio_cifrado, iv))
+        print(imgqr)
+
         fechaEntro = datetime.today()
         horaentrada = str(fechaEntro)
         horaentrada=horaentrada[:16]
@@ -189,7 +194,7 @@ class FormularioOperacion:
         # hacer la foto de codigo qr
         #img = qrcode.make("2 de septiembre")
         fSTR=str(fechaEntro)
-        imgqr=(fSTR + masuno)
+        #imgqr=(fSTR + masuno)
         #img = qrcode.make(fechaEntro)
         img = qrcode.make(imgqr)
         # Obtener imagen con el tamaño indicado

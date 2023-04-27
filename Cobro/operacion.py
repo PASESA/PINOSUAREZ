@@ -1,7 +1,9 @@
-#esto para el programa de p8 donde guardamos el tiempo transcurrido en una variable varchar
-#import mysql.connector
-#VERSION PINO SUAREZ
 import pymysql
+import hashlib
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+import base64
+from tkinter import messagebox as mb
 
 class Operacion:
 
@@ -11,10 +13,6 @@ class Operacion:
                                  passwd="RG980320",
                                  database="Parqueadero1")
 
-       # conexion = pymysql.connect(host="192.168.1.98",
-        #                   user="Aurelio",
-         #                  passwd="RG980320",
-          #                 database="Parqueadero1")
         return conexion
 
 
@@ -290,4 +288,81 @@ class Operacion:
         cursor.execute(sql,dato)        
         cone.commit()
         cone.close()
+
+
+    def cifrar_AES(self, texto_plano: str, clave: str = "PASE") -> tuple:
+        """
+        Cifra el texto plano utilizando el algoritmo AES en modo CBC.
+
+        Args:
+            texto_plano (str): Texto plano a cifrar.
+            clave (str): Clave secreta para cifrar el texto. Por defecto es "PASE".
+
+        Returns:
+            tuple: Una tupla con dos elementos:
+                texto_cifrado (str): Texto cifrado en Base64.
+                iv (bytes): Vector de inicialización utilizado en el cifrado.
+        """
+        try: 
+            # Convertir la clave en una clave de 32 caracteres
+            clave_hash = hashlib.sha256(clave.encode()).digest()
+
+            # Crear un objeto de cifrado AES
+            cipher = AES.new(clave_hash, AES.MODE_CBC)
+
+            # Cifrar el texto plano y convertirlo en una cadena de bytes
+            texto_cifrado_bytes = cipher.encrypt(pad(texto_plano.encode(), AES.block_size))
+
+            # Codificar la cadena de bytes en Base64
+            texto_cifrado = base64.b64encode(texto_cifrado_bytes).decode()
+
+            # Retornar el texto cifrado y el vector de inicialización
+            return texto_cifrado, cipher.iv
+
+        except AttributeError: mb.showerror("Error", "La información a codificar debe ser un string")
+        except Exception as e:
+            print(e)
+            mb.showerror("Error", f"Error al encriptar, intente nuevamente, si el error persiste contacte a un adminsitrador y muestre el siguiente mensaje de error:\n{e}.")
+
+
+    def descifrar_AES(self, texto_cifrado: str, iv: bytes, clave: str = "PASE") -> str:
+        """
+        Descifra el texto cifrado utilizando el algoritmo AES en modo CBC.
+
+        Args:
+            texto_cifrado (str): Texto cifrado en Base64 a descifrar.
+            iv (bytes): Vector de inicialización utilizado en el cifrado.
+            clave (str): Clave secreta utilizada en el cifrado. Por defecto es "PASE".
+
+        Returns:
+            texto_descifrado (str): Texto descifrado.
+        """
+        try:
+            # Convertir la clave en una clave de 32 caracteres
+            clave_hash = hashlib.sha256(clave.encode()).digest()
+
+            # Decodificar el texto cifrado de Base64
+            texto_cifrado_bytes = base64.b64decode(texto_cifrado)
+
+            # Convertir el vector de inicialización a una cadena de texto en formato hexadecimal
+            iv_hex = iv.hex()
+
+            # Convertir la cadena de texto hexadecimal en bytes
+            iv_bytes = bytes.fromhex(iv_hex)
+
+            # Crear un objeto de descifrado AES
+            cipher = AES.new(clave_hash, AES.MODE_CBC, iv_bytes)
+
+            # Descifrar el texto cifrado y eliminar el relleno
+            texto_descifrado_bytes = cipher.decrypt(texto_cifrado_bytes)
+            texto_descifrado = unpad(texto_descifrado_bytes, AES.block_size).decode()
+
+            # Retornar el texto descifrado
+            return texto_descifrado
+
+        except Exception as e:
+            print(e)
+            mb.showerror("Error", f"Error al desencriptar, intente nuevamente, si el error persiste contacte a un adminsitrador y muestre el siguiente mensaje de error:\n{e}.")
+            return None
+
 
