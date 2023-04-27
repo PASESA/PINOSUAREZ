@@ -75,13 +75,14 @@ def descifrar_AES(texto_cifrado: str, iv: bytes, clave: str = "PASE") -> str:
         # Retornar el texto descifrado
         return texto_descifrado
 
-    except Exception:
+    except Exception as e:
+        print(e)
         mb.showerror("Error", "La información a decifrar es incorrecta.")
         return None
 
 
 folio = "9999999999"
-folio = "0123456789"
+#folio = "0123456789"
 
 texto_cifrado, iv = cifrar_AES(texto_plano = folio)
 
@@ -101,13 +102,12 @@ img.save("reducida.png")
 
 folio_cifrado = imgqr[0]
 vector = imgqr[1]
-vector = b''
 
 print(f"Folio cifrado: {folio_cifrado}")
 print(f"Vector: {vector}")
 
 
-texto_descifrado = descifrar_AES(texto_cifrado = "110101", iv = vector)
+texto_descifrado = descifrar_AES(texto_cifrado = folio_cifrado, iv = vector)
 
 print(f"Folio desifrado: {texto_descifrado}")
 
