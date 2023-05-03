@@ -1,10 +1,11 @@
 #VERSION PINO SUAREZ
+#pip install pycryptodome
 from datetime import datetime, date, time, timedelta
 formato = "%H:%M:%S"
 
 ban = 0
-from escpos.printer import *
-import qrcode
+#from escpos.printer import *
+#import qrcode
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mb
@@ -178,6 +179,10 @@ class FormularioOperacion:
         self.boton2.grid(column=0, row=0)
         self.boton3=tk.Button(self.labelPerdido, text="Boleto Perdido", command=self.BoletoPerdido, width=10, height=2, anchor="center")
         self.boton3.grid(column=0, row=2)
+
+        self.boton_boleto_dañado=tk.Button(self.labelPerdido, text="Boleto Dañado", command=self.BoletoDañado, width=10, height=2, anchor="center")
+        self.boton_boleto_dañado.grid(column=1, row=2)
+
         self.scrolledtxt=st.ScrolledText(self.labelPerdido, width=28, height=7)
         self.scrolledtxt.grid(column=1,row=0, padx=10, pady=10)
         self.labelpromo=ttk.LabelFrame(self.pagina2, text="Promociones")
@@ -1342,5 +1347,34 @@ class FormularioOperacion:
         #AutosAnteriores = int(self.Autos_Anteriores.get(),)
         #Cuantos_hay_dentro = ((AutosAnteriores + EntradasSen) - SalidasSen)
         #self.AutosEnEstacionamiento.set(Cuantos_hay_entro)
+
+
+
+
+
+
+############################################################################
+
+    def BoletoDañado(self):
+        datos=str(self.PonerFOLIO.get())
+
+        if len(datos) == 0:
+            respuesta=self.operacion1.consulta(datos)
+            if len(respuesta)>0:
+                self.descripcion.set(respuesta[0][0])
+                self.precio.set(respuesta[0][1])
+                self.CalculaPermanencia()#nos vamos a la funcion de calcular permanencia
+
+                self.PrTi.set("Dañado")
+
+
+            else:
+                self.descripcion.set('')
+                self.precio.set('')
+                mb.showinfo("Información", "No existe un auto con dicho código")
+        else:
+            mb.showinfo("Error", "Ingrese el folio del boleto dañado")
+            self.folio.set("")
+            self.entryfolio.focus()
 
 aplicacion1=FormularioOperacion()
