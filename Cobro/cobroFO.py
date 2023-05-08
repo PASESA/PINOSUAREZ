@@ -4,8 +4,8 @@ from datetime import datetime, date, time, timedelta
 formato = "%H:%M:%S"
 
 ban = 0
-#from escpos.printer import *
-#import qrcode
+###-###from escpos.printer import *
+import qrcode
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mb
@@ -17,8 +17,8 @@ import operacion
 import time
 from PIL import ImageTk, Image
 #import 
-import xlsxwriter
-#import serial
+###-###import xlsxwriter
+###-###import serial
 #import RPi.GPIO as io
 #out1 = 17
 #io.setmode(io.BCM)              # modo in/out pin del micro
@@ -101,20 +101,12 @@ class FormularioOperacion:
         corteNum = 0
         placa=str(self.Placa.get(), )
         datos=(fechaEntro, corteNum, placa)
-        # hacer la foto de codigo qr
-        #img = qrcode.make("2 de septiembre")
-        fSTR=str(fechaEntro)
-        #imgqr=(fSTR + masuno)
-        #img = qrcode.make(fechaEntro)
-        img = qrcode.make(imgqr)
-        # Obtener imagen con el tamaño indicado
-        reducida = img.resize((100, 75))
-        # Mostrar imagen reducida.show()
-        # Guardar imagen obtenida con el formato JPEG
-        reducida.save("reducida.png")
-        f = open("reducida.png", "wb")
-        img.save(f)
-        f.close()
+
+
+		#Generar QR
+        self.operacion1.generar_QR(imgqr)
+
+
         #aqui lo imprimimos
         p = Usb(0x04b8, 0x0202, 0)
         #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
@@ -358,7 +350,7 @@ class FormularioOperacion:
         # print(f"Escaneo: {datos}")
         # print(f"Tamaño: {len(datos)}")
 
-        if len(datos) > 60:
+        if len(datos) >= 30:
             datos = eval(datos)
             
             folio_cifrado = datos[0]
@@ -1377,4 +1369,4 @@ class FormularioOperacion:
             self.folio.set("")
             self.entryfolio.focus()
 
-aplicacion1=FormularioOperacion()
+#aplicacion1=FormularioOperacion()
