@@ -90,9 +90,7 @@ class FormularioOperacion:
         masuno = str(masuno)
         self.MaxId.set(masuno)
 
-        folio_cifrado, iv = self.operacion1.cifrar_AES(texto_plano = masuno)
-        imgqr = tuple((folio_cifrado, iv))
-        print(imgqr)
+        folio_cifrado = self.operacion1.cifrar_folio(folio = masuno)
 
         fechaEntro = datetime.today()
         horaentrada = str(fechaEntro)
@@ -102,10 +100,8 @@ class FormularioOperacion:
         placa=str(self.Placa.get(), )
         datos=(fechaEntro, corteNum, placa)
 
-
 		#Generar QR
-        self.operacion1.generar_QR(imgqr)
-
+        self.operacion1.generar_QR(folio_cifrado)
 
         #aqui lo imprimimos
         p = Usb(0x04b8, 0x0202, 0)
@@ -347,16 +343,10 @@ class FormularioOperacion:
         global ban
         ban = 0
         datos=str(self.folio.get())
-        # print(f"Escaneo: {datos}")
-        # print(f"Tamaño: {len(datos)}")
 
-        if len(datos) >= 30:
-            datos = eval(datos)
-            
-            folio_cifrado = datos[0]
-            vector = datos[1]
+        if len(datos) < 20:#con esto revisamos si lee el folio o la promocion
 
-            folio = self.operacion1.descifrar_AES(texto_cifrado = folio_cifrado, iv = vector)
+            folio = self.operacion1.descifrar_folio(folio_cifrado = datos)
             print(f"\nFolio descifrado: {folio}")
 
             respuesta=self.operacion1.consulta(folio)
@@ -369,21 +359,6 @@ class FormularioOperacion:
                 self.precio.set('')
                 mb.showinfo("Información", "No existe un auto con dicho código")
 
-        # elif len(datos) > 20:#con esto revisamos si lee el folio o la promocion
-        #     datos=datos[26:]
-        #     datos=int(datos)
-        #     datos=str(datos)
-        #     self.folio.set(datos)
-        #     datos=(self.folio.get(), )
-        #     respuesta=self.operacion1.consulta(datos)
-        #     if len(respuesta)>0:
-        #         self.descripcion.set(respuesta[0][0])
-        #         self.precio.set(respuesta[0][1])
-        #         self.CalculaPermanencia()#nos vamos a la funcion de calcular permanencia
-        #     else:
-        #         self.descripcion.set('')
-        #         self.precio.set('')
-        #         mb.showinfo("Información", "No existe un auto con dicho código")
         else:
             mb.showinfo("Promocion", "leer primero el folio")
             self.folio.set("")
@@ -492,6 +467,8 @@ class FormularioOperacion:
         self.elcambioes.set(cambio)
         self.Comprobante()#manda a llamar el comprobante y lo imprime
         self.GuardarCobro()#manda a llamar guardar cobro para cobrarlo y guardar registro
+        self.PonerFOLIO.set('')
+
         #io.output(out1,0)
         #time.sleep(1)
         #io.output(out1,1)
@@ -1350,15 +1327,14 @@ class FormularioOperacion:
     def BoletoDañado(self):
         datos=str(self.PonerFOLIO.get())
 
-        if len(datos) == 0:
+        if len(datos) > 0:
             respuesta=self.operacion1.consulta(datos)
             if len(respuesta)>0:
                 self.descripcion.set(respuesta[0][0])
                 self.precio.set(respuesta[0][1])
                 self.CalculaPermanencia()#nos vamos a la funcion de calcular permanencia
 
-                self.PrTi.set("Dañado")
-
+                self.PrTi.set("Maltratado")
 
             else:
                 self.descripcion.set('')

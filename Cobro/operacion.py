@@ -1,8 +1,5 @@
 import pymysql
-import hashlib
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-import base64
+import random
 import qrcode
 from tkinter import messagebox as mb
 
@@ -291,120 +288,110 @@ class Operacion:
 		cone.close()
 
 
-	def cifrar_AES(self, texto_plano: str, clave: str = "PASE") -> tuple:
+	def cifrar_folio(self, folio):
 		"""
-		Cifra un mensaje en texto plano utilizando el algoritmo de cifrado AES con una clave proporcionada.
+		Cifra un número de folio utilizando una tabla de sustitución numérica.
 
 		Args:
-			texto_plano (str): El mensaje que se desea cifrar en texto plano.
-			clave (str, opcional): La clave que se utilizará para cifrar el mensaje. Debe ser una cadena de caracteres ASCII.
-				Por defecto es "PASE".
+			folio (int): Número de folio a cifrar.
 
 		Returns:
-			tuple: Una tupla que contiene el texto cifrado y el vector de inicialización utilizado para cifrar el mensaje.
-				El texto cifrado es una cadena de caracteres ASCII codificada en Base64, y el vector de inicialización es una cadena
-				de bytes de 16 caracteres.
-
-		Raises:
-			TypeError: Si el argumento texto_plano no es una cadena de caracteres.
-			TypeError: Si el argumento clave no es una cadena de caracteres.
-			ValueError: Si la longitud de la clave proporcionada es mayor que 32 caracteres.
-
+			str: Número de folio cifrado.
 		"""
-		try:
-			# Convertir la clave en una clave de 32 caracteres
-			clave_hash = hashlib.sha256(clave.encode()).digest()
 
-			# Crear un objeto de cifrado AES
-			cipher = AES.new(clave_hash, AES.MODE_CBC)
+		# Convierte el número de folio en una cadena de texto.
+		folio = str(folio)
 
-			# Cifrar el texto plano y convertirlo en una cadena de bytes
-			texto_cifrado_bytes = cipher.encrypt(pad(texto_plano.encode(), AES.block_size))
+		# Genera un número aleatorio de 5 dígitos y lo convierte en una cadena de texto.
+		num_random = random.randint(10000, 99999)
+		numero_seguridad = str(num_random)
 
-			# Codificar la cadena de bytes en Base64
-			texto_cifrado = base64.b64encode(texto_cifrado_bytes).decode()
+		# Concatena el número de seguridad al número de folio.
+		folio = folio + numero_seguridad
 
-			# Guardar el vector de inicialización
-			iv = cipher.iv
+		# Imprime el número de folio cifrado (sólo para propósitos de depuración).
+		print(folio)
 
-			# Retornar el texto cifrado y el vector de inicialización
-			return texto_cifrado, iv
+		# Tabla de sustitución numérica.
+		tabla = {'0': '5', '1': '3', '2': '9', '3': '1', '4': '7', '5': '0', '6': '8', '7': '4', '8': '6', '9': '2'}
 
-		except TypeError as error:
-			mb.showwarning("Error", f"El texto a decifrar no es una cadena de caracteres, intente nuevamente.\nSi el error continua muestre el siguiente mensaje a un administrador: {error}")
+		# Convierte el número de folio cifrado a una lista de dígitos.
+		digitos = list(folio)
 
-		except ValueError as error:
-			mb.showwarning("Error", f"la longitud de la clave proporcionada es mayor que 32 caracteres, intente nuevamente.\nSi el error continua muestre el siguiente mensaje a un administrador: {error}")
+		# Sustituye cada dígito por el número correspondiente en la tabla de sustitución.
+		cifrado = [tabla[digito] for digito in digitos]
 
-		except Exception as e:
-			mb.showwarning("Error", f"Ha ocurrido un error inesperado al codificar, intente nuevamente.\nSi el error continua muestre el siguiente mensaje a un administrador: {e}")
+		# Convierte la lista cifrada de vuelta a una cadena de texto.
+		cifrado = ''.join(cifrado)
 
-	def descifrar_AES(self, texto_cifrado: str, iv: bytes, clave: str = "PASE") -> str:
+		# Devuelve el número de folio cifrado.
+		return cifrado
+
+
+	def descifrar_folio(self, folio_cifrado):
 		"""
-		Descifra un mensaje cifrado en texto plano utilizando el algoritmo de cifrado AES con una clave y un vector de inicialización proporcionados.
+		Descifra un número de folio cifrado utilizando una tabla de sustitución numérica.
 
 		Args:
-			texto_cifrado (str): El mensaje cifrado que se desea descifrar. Debe ser una cadena de caracteres ASCII codificada en Base64.
-			iv (bytes): El vector de inicialización utilizado para cifrar el mensaje. Debe ser una cadena de bytes de 16 caracteres.
-			clave (str, opcional): La clave que se utilizará para cifrar el mensaje. Debe ser una cadena de caracteres ASCII.
-				Por defecto es "PASE".
+			folio_cifrado (str): Número de folio cifrado.
 
 		Returns:
-			texto_descifrado (str): El texto descifrado en formato de cadena de caracteres ASCII.
-
-		Raises:
-			TypeError: Si el argumento texto_cifrado no es una cadena de caracteres.
-			TypeError: Si el argumento iv no es una cadena de bytes.
-			TypeError: Si el argumento clave no es una cadena de caracteres.
-			ValueError: Si la longitud de la clave proporcionada es mayor que 32 caracteres.
-			ValueError: Si la longitud del vector de inicialización proporcionado es diferente de 16 caracteres.
-			ValueError: Si el mensaje cifrado no tiene una longitud válida.
-
+			str: Número de folio descifrado.
 		"""
-
 		try:
-			# Convertir la clave en una clave de 32 caracteres
-			clave_hash = hashlib.sha256(clave.encode()).digest()
+			# Verifica si el número de folio es válido.
+			if len(folio_cifrado) <= 5:
+				raise ValueError("El folio no es válido, escanee nuevamente, si el error persiste contacte con un administrador.")
 
-			# Decodificar el texto cifrado de Base64
-			texto_cifrado_bytes = base64.b64decode(texto_cifrado)
+			# Verifica si el número de folio tiene caracteres inválidos.
+			caracteres_invalidos = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '{', '}', '[', ']', '|', '\\', ':', ';', '<', '>', ',', '.', '/', '?']
+			if any(caracter in folio_cifrado for caracter in caracteres_invalidos):
+				raise TypeError("El folio no tiene un formato válido")
 
-			# Verificar la longitud del vector de inicialización
-			if len(iv) != 16:
-				raise ValueError("El vector de inicialización debe ser una cadena de bytes de 16 caracteres.")
+			# Tabla de sustitución numérica.
+			tabla = {'0': '5', '1': '3', '2': '9', '3': '1', '4': '7', '5': '0', '6': '8', '7': '4', '8': '6', '9': '2'}
 
-			# Crear un objeto de descifrado AES
-			cipher = AES.new(clave_hash, AES.MODE_CBC, iv)
+			# Convierte el número de folio cifrado a una lista de dígitos.
+			digitos_cifrados = list(folio_cifrado)
 
-			# Descifrar el texto cifrado y eliminar el relleno
-			texto_descifrado_bytes = cipher.decrypt(texto_cifrado_bytes)
-			texto_descifrado = unpad(texto_descifrado_bytes, AES.block_size).decode()
+			# Crea una tabla de sustitución inversa invirtiendo la tabla original.
+			tabla_inversa = {valor: clave for clave, valor in tabla.items()}
 
-			# Retornar el texto descifrado
-			return texto_descifrado
+			# Sustituye cada dígito cifrado por el número correspondiente en la tabla de sustitución inversa.
+			descifrado = [tabla_inversa[digito] for digito in digitos_cifrados]
 
+			# Convierte la lista descifrada de vuelta a una cadena de texto.
+			descifrado = ''.join(descifrado)
+
+			# Elimina los últimos 4 dígitos, que corresponden al número aleatorio generado en la función cifrar_folio.
+			descifrado = descifrado[:-5]
+
+			# Retorna el folio descifrado.
+			return descifrado
+
+		# Maneja el error si el formato del número de folio es incorrecto.
 		except TypeError as error:
-			mb.showwarning("Error", f"El texto a desifrar no es una cadena de caracteres, intente nuevamente.\nSi el error continua muestre el siguiente mensaje a un administrador: {error}")
+			mb.showerror("Error", f"El folio tiene un formato incorrecto, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
+			return None
 
-		except ValueError as error:
-			mb.showwarning("Error", f"Ha ocurrido un error de valor, intente nuevamente.\nSi el error continua muestre el siguiente mensaje a un administrador: {error}")
+		# Maneja cualquier otro error que pueda ocurrir al descifrar el número de folio.
+		except Exception as error:
+			mb.showerror("Error", f"Ha ocurrido un error al descifrar el folio, intente nuevamente, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
+			return None
 
-		except Exception as e:
-			mb.showwarning("Error", f"Ha ocurrido un error inesperado al decodificar, intente nuevamente.\nSi el error continua muestre el siguiente mensaje a un administrador: {e}")
 
 	def generar_QR(self, QR_info: str, path: str = "reducida.png") -> None:
 		"""Genera un código QR a partir de la información dada y lo guarda en un archivo de imagen.
 
 		Args:
 			QR_info (str): La información para generar el código QR.
-			path (str, optional): La ruta y el nombre del archivo de imagen donde se guardará el código QR. 
-								Por defecto es "reducida.png".
+			path (str, optional): La ruta y el nombre del archivo de imagen donde se guardará el código QR, por defecto es "reducida.png".
 		"""
 		# Generar el código QR
 		img = qrcode.make(QR_info)
 
 		# Redimensionar el código QR a un tamaño específico
-		img = img.get_image().resize((350, 350))
+		img = img.get_image().resize((320, 320))
 
 		# Guardar la imagen redimensionada en un archivo
 		img.save(path)

@@ -180,11 +180,10 @@ class FormularioOperacion:
         masuno = str(masuno)
         self.MaxId.set(masuno)
 
-        folio_cifrado, iv = self.operacion1.cifrar_AES(texto_plano = masuno)
-        imgqr = tuple((folio_cifrado, iv))
+        folio_cifrado = self.operacion1.cifrar_folio(folio = masuno)
 
         #Generar QR
-        self.operacion1.generar_QR(imgqr)
+        self.operacion1.generar_QR(folio_cifrado)
 
         fechaEntro = datetime.today()
         horaentrada = str(fechaEntro)
