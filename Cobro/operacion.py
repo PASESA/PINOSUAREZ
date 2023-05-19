@@ -263,7 +263,7 @@ class Operacion:
 		sql="SELECT inicio, usuario FROM MovsUsuarios where inicio > %s" #and CierreCorte = 'No aplica'  Idusuario = %s and 
 		cursor.execute(sql, dato)
 		cone.close()
-		return cursor.fetchall()                 
+		return cursor.fetchall()
 	def ActuaizaUsuario(self, actual):
 		cone=self.abrir()
 		cursor=cone.cursor()
@@ -283,7 +283,7 @@ class Operacion:
 		cone=self.abrir()
 		cursor=cone.cursor()
 		sql = "update MovsUsuarios set CierreCorte = 'No aplica' where  id_movs > %s;"
-		cursor.execute(sql,dato)        
+		cursor.execute(sql,dato)
 		cone.commit()
 		cone.close()
 

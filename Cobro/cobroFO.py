@@ -4,7 +4,7 @@ from datetime import datetime, date, time, timedelta
 formato = "%H:%M:%S"
 
 ban = 0
-###-###from escpos.printer import *
+from escpos.printer import *
 import qrcode
 import tkinter as tk
 from tkinter import ttk
@@ -17,13 +17,16 @@ import operacion
 import time
 from PIL import ImageTk, Image
 #import 
-###-###import xlsxwriter
-###-###import serial
+import xlsxwriter
+import serial
 #import RPi.GPIO as io
 #out1 = 17
 #io.setmode(io.BCM)              # modo in/out pin del micro
 #io.setwarnings(False)           # no señala advertencias de pin ya usados
 #io.setup(out1,io.OUT)           # configura en el micro las salidas
+
+###-###
+p = Usb(0x04b8, 0x0202, 0)
 
 class FormularioOperacion:
     def __init__(self):
@@ -94,7 +97,7 @@ class FormularioOperacion:
 
         fechaEntro = datetime.today()
         horaentrada = str(fechaEntro)
-        horaentrada=horaentrada[:18]
+        horaentrada=horaentrada[:19]
         self.labelhr.configure(text=(horaentrada, "Entró"))
         corteNum = 0
         placa=str(self.Placa.get(), )
@@ -104,7 +107,7 @@ class FormularioOperacion:
         self.operacion1.generar_QR(folio_cifrado)
 
         #aqui lo imprimimos
-        p = Usb(0x04b8, 0x0202, 0)
+        ###-###p = Usb(0x04b8, 0x0202, 0)
         #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.set("center")
         p.text("BOLETO DE ENTRADA\n")
@@ -297,24 +300,24 @@ class FormularioOperacion:
            minutos_dentro, segundos_vividos = divmod(segundos_vividos, 60)
            if horas_dentro < 1:
                 #importe = 200+((ffeecha.days)*720 + (horas_dentro * 36))
-                importe = 238       
+                importe = 238
            if horas_dentro >=1 and horas_dentro <= 24:
                 if minutos_dentro < 16 and minutos_dentro  >= 0:
-                     importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+13)                    
-                if minutos_dentro < 31 and minutos_dentro  >= 16:               
+                     importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+13)
+                if minutos_dentro < 31 and minutos_dentro  >= 16:
                      importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+26)
-                if minutos_dentro < 46 and minutos_dentro  >= 31:     
+                if minutos_dentro < 46 and minutos_dentro  >= 31:
                      importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+32)
-                if minutos_dentro <= 59 and minutos_dentro  >= 46:     
+                if minutos_dentro <= 59 and minutos_dentro  >= 46:
                      importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+38)
-                                                      
+
            if horas_dentro > 24 or ffeecha.days >= 1:
                 importe = 200+((ffeecha.days)*720 + (horas_dentro * 38))
            self.importe.set(importe)
            self.label9.configure(text =(importe, "cobro"))
            self.PrTi.set("Per")
            self.Comprobante()
-           p = Usb(0x04b8, 0x0202, 0)
+           ###-###p = Usb(0x04b8, 0x0202, 0)
            #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
            p.text('Boleto Perdido\n')
            FoliodelPerdido = str(self.PonerFOLIO.get(),)
@@ -474,7 +477,7 @@ class FormularioOperacion:
         #io.output(out1,1)
 
     def Comprobante(self):
-        p = Usb(0x04b8, 0x0202, 0)
+        ###-###p = Usb(0x04b8, 0x0202, 0)
         #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.text("        Comprobante de pago\n")
         placa=str(self.Placa.get(), )
@@ -839,7 +842,7 @@ class FormularioOperacion:
         Ano= datetime.now().date().year
         self.AnoCorte.set(Ano)
         self.entryAnoCorte=tk.Entry(self.labelframe5, width=7, textvariable=self.AnoCorte, justify=tk.RIGHT)
-        self.entryAnoCorte.grid(column=1, row=2)       
+        self.entryAnoCorte.grid(column=1, row=2)
         self.boton6=tk.Button(self.labelframe5, text="Reporte de Corte", command=self.Reporte_Corte, width=15, height=1, anchor="center", background="red")
         self.boton6.grid(column=3, row=2, padx=4, pady=4) 
     def BoletoDentro2(self):
@@ -851,12 +854,12 @@ class FormularioOperacion:
         Numcorte=str(self.CortesAnteri.get(), )
         Numcorte=int(Numcorte)
         Numcorte=str(Numcorte)
-        io.output(out1,0)
-        time.sleep(1)
-        io.output(out1,1)
+        # io.output(out1,0)
+        # time.sleep(1)
+        # io.output(out1,1)
         respuesta=self.operacion1.desglose_cobrados(Numcorte)
         self.scrolledtxt2.delete("1.0", tk.END)
-        p = Usb(0x04b8, 0x0202, 0)
+        ###-###p = Usb(0x04b8, 0x0202, 0)
         #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.text("El Numero de corte es "+Numcorte+'\n')
         for fila in respuesta:
@@ -904,7 +907,7 @@ class FormularioOperacion:
            self.label9.configure(text =(importe, "cobro"))
            self.PrTi.set("CDO")
            self.promo.set("")
-           p = Usb(0x04b8, 0x0202, 0)
+           ###-###p = Usb(0x04b8, 0x0202, 0)
            #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
            p.text('Boleto Cancelado\n')
            FoliodelCancelado = str(self.FolioCancelado.get(),)
@@ -939,7 +942,7 @@ class FormularioOperacion:
         #respuesta=str(respuesta)
         for fila in respuesta:
             self.scrolledtext1.insert(tk.END, "Entrada num: "+str(fila[0])+"\nEntro: "+str(fila[1])+"\nSalio: "+str(fila[2])+"\nImporte: "+str(fila[3])+"\n\n")
-            p = Usb(0x04b8, 0x0202, 0)
+            ###-###p = Usb(0x04b8, 0x0202, 0)
             #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
             p.text('Entrada Num :')
             p.text(str(fila[0]))
@@ -1029,7 +1032,7 @@ class FormularioOperacion:
         vobo = "cor"#este es para que la instruccion no marque error
         ActEntradas = (maxnum, vobo )
         self.label4.configure(text=("Numero de corte",maxnum))
-        p = Usb(0x04b8, 0x0202, 0)
+        ###-###p = Usb(0x04b8, 0x0202, 0)
         #p = Usb(0x04b8, 0x0e28, 0)
         #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         
@@ -1115,7 +1118,7 @@ class FormularioOperacion:
         self.scrolledtxt2.delete("1.0", tk.END)
         #mb.showinfo("respuesta", respuesta)
         #p = Usb(0x04b8, 0x0e28, 0)
-        p = Usb(0x04b8, 0x0202, 0)
+        ###-###p = Usb(0x04b8, 0x0202, 0)
         #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.text("Cantidad e Importes "+'\n')
         p.text("Cantidad - Tarifa - valor C/U - Total "+'\n')
@@ -1326,7 +1329,9 @@ class FormularioOperacion:
 
     def BoletoDañado(self):
         datos=str(self.PonerFOLIO.get())
-
+        self.folio.set(datos)
+        p.text(f"el folio del boleto dañado Ses: {self.folio.get()}")
+        
         if len(datos) > 0:
             respuesta=self.operacion1.consulta(datos)
             if len(respuesta)>0:
