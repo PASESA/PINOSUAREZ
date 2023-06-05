@@ -292,11 +292,9 @@ class Operacion:
 		"""
 		Cifra un número de folio utilizando una tabla de sustitución numérica.
 
-		Args:
-			folio (int): Número de folio a cifrar.
-
-		Returns:
-			str: Número de folio cifrado.
+		:param folio (int): Número de folio a cifrar.
+		:return:
+			-cifrado (str): Número de folio cifrado.
 		"""
 
 		# Convierte el número de folio en una cadena de texto.
@@ -332,11 +330,9 @@ class Operacion:
 		"""
 		Descifra un número de folio cifrado utilizando una tabla de sustitución numérica.
 
-		Args:
-			folio_cifrado (str): Número de folio cifrado.
-
-		Returns:
-			str: Número de folio descifrado.
+		:param folio_cifrado (str): Número de folio a cifrar.
+		:return:
+			-descifrado (str): Número de folio cifrado.
 		"""
 		try:
 			# Verifica si el número de folio es válido.
@@ -383,9 +379,8 @@ class Operacion:
 	def generar_QR(self, QR_info: str, path: str = "reducida.png") -> None:
 		"""Genera un código QR a partir de la información dada y lo guarda en un archivo de imagen.
 
-		Args:
-			QR_info (str): La información para generar el código QR.
-			path (str, optional): La ruta y el nombre del archivo de imagen donde se guardará el código QR, por defecto es "reducida.png".
+		:param QR_info (str): La información para generar el código QR.
+		:param path (str, optional): La ruta y el nombre del archivo de imagen donde se guardará el código QR, por defecto es "reducida.png".
 		"""
 		# Generar el código QR
 		img = qrcode.make(QR_info)
