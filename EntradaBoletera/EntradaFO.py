@@ -169,7 +169,7 @@ class FormularioOperacion:
         self.scrolledtext.delete("1.0", tk.END)
         for fila in respuesta:
             self.scrolledtext.insert(tk.END, "Entrada num: "+str(fila[0])+"\nEntro: "+str(fila[1])+"\n\n")
-     
+
     def agregarRegistroRFID(self):
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$impresion    $$$$$$$$$$$$$$$$$$$
         MaxFolio=str(self.operacion1.MaxfolioEntrada())
@@ -193,8 +193,7 @@ class FormularioOperacion:
         placa=str(self.Placa.get(), )
         datos=(fechaEntro, corteNum, placa)
 
-        print("horaentrada",horaentrada)
-        
+
         self.operacion1.altaRegistroRFID(datos)
         p = Usb(0x04b8, 0x0202, 0)
         #p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
@@ -205,7 +204,7 @@ class FormularioOperacion:
         folioZZ=('FOLIO 000' + masuno)
         p.text(folioZZ+'\n')
         p.set("center")        
-        p.text('Entro: '+horaentrada+'\n')
+        p.text('Entro: '+horaentrada[-3]+'\n')
         p.text('Placas '+placa+'\n')
         p.set(align="left")
         p.image("LOGO1.jpg")
@@ -221,7 +220,7 @@ class FormularioOperacion:
         folioZZ=('FOLIO 000' + masuno)
         p.text(folioZZ+'\n')
         #p.set("center")
-        p.text('Entro: '+horaentrada+'\n')
+        p.text('Entro: '+horaentrada[-3]+'\n')
         p.set("left")
         p.text('Placas: '+placa+'\n')
         p.text('Color:_____________________ \n')
@@ -240,7 +239,7 @@ class FormularioOperacion:
         folioZZ=('FOLIO 0' + masuno)
         p.text(folioZZ+'\n')
         p.set("center")
-        p.text('Entro: '+horaentrada+'\n')
+        p.text('Entro: '+horaentrada[-3]+'\n')
         p.set(height=2, align='left')       
         p.text('Placas:'+placa+'\n')
         p.set("left")
