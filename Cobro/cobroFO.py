@@ -559,14 +559,13 @@ class FormularioOperacion:
             self.ffeecha.set(ffeecha)
             self.ffeecha_auxiliar.set(self.ffeecha.get()[:-3])
 
-            if minutos_dentro < 15 and minutos_dentro  >= 0:
-                minutos = 1
-            if minutos_dentro < 30 and minutos_dentro  >= 15:
-                minutos = 2
-            if minutos_dentro < 45 and minutos_dentro  >= 30:
-                minutos = 3
-            if minutos_dentro <= 59 and minutos_dentro  >= 45:
-                minutos = 4
+            if minutos_dentro == 0: minutos = 0
+            elif minutos_dentro < 16 and minutos_dentro >= 1: minutos = 1
+            elif minutos_dentro < 31 and minutos_dentro >= 16: minutos = 2
+            elif minutos_dentro < 46 and minutos_dentro >= 31: minutos = 3
+            elif minutos_dentro <= 59 and minutos_dentro >= 46: minutos = 4
+
+
             if ffeecha.days == 0 and horas_dentro == 0:
                importe = 38
                self.importe.set(importe)
