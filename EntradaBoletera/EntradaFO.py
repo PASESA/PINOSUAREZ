@@ -43,6 +43,7 @@ import serial
 # io.output(out3,1)
 # Configuracion de las entradas y las salidas del micro
 # -----------------------------------------------------
+estilo = ('Arial', 12)
 class FormularioOperacion:
     def __init__(self):
         #creamos un objeto que esta en el archivo operacion dentro la clase Operacion
@@ -60,6 +61,7 @@ class FormularioOperacion:
         #self.listado_completo()
         self.cuaderno1.grid(column=0, row=0, padx=5, pady=5)
         self.ventana1.mainloop()
+        
     ###########################Inicia Pagina1##########################
 # Funcion de lectura de las entradas
 # -----------------------------------
@@ -67,32 +69,79 @@ class FormularioOperacion:
         self.pagina1 = ttk.Frame(self.cuaderno1)
         self.cuaderno1.add(self.pagina1, text="Expedir Boleto")
         #enmarca los controles LabelFrame
-        self.labelframe1=ttk.LabelFrame(self.pagina1, text="Dar Entrada")
-        self.labelframe1.grid(column=1, row=0, padx=0, pady=0)
-        # self.Adentroframe=ttk.LabelFrame(self.pagina1, text="Autos DENTRO")
-        # self.Adentroframe.grid(column=2, row=0, padx=0, pady=0)
+
+        self.frame_superior = tk.Frame(self.pagina1)
+        self.frame_superior.grid(column=0, row=0, padx=0, pady=0)
+
+        self.label_salir_mensajes = tk.Frame(self.frame_superior)
+        self.label_salir_mensajes.grid(column=0, row=0, padx=0, pady=0)
+
+        self.boton_salir=tk.Button(self.label_salir_mensajes, text="Salir del programa", command=quit, width=15, height=1, anchor="center", background="red")
+        self.boton_salir.grid(column=0, row=0, padx=4, pady=4) 
+
+        self.frame_info = ttk.LabelFrame(self.label_salir_mensajes, text="MENSAJES")#, background = '#CCC')
+        self.frame_info.grid(column=0, row=1, padx=4, pady=4) 
+
+        self.label_informacion = ttk.Label(self.frame_info, text="", font=estilo, width=18)
+        self.label_informacion.grid(column=0, row=0, padx=4, pady=4)
+
+
+
+        self.label_entrada = ttk.LabelFrame(self.frame_superior, text="Dar Entrada")
+        self.label_entrada.grid(column=1, row=0, padx=0, pady=0)
+
+        self.frame_info_cliente=ttk.LabelFrame(self.label_entrada, text="Placas")
+        self.frame_info_cliente.grid(column=0, row=0, padx=0, pady=0, sticky=tk.NW)
+
         self.MaxId=tk.StringVar()
-        self.entryMaxId=ttk.Entry(self.labelframe1, width=10, textvariable=self.MaxId, state="readonly")
+        self.entryMaxId=ttk.Entry(self.frame_info_cliente, width=10, textvariable=self.MaxId, state="readonly", font=estilo)
         self.entryMaxId.grid(column=1, row=0, padx=4, pady=4)
-        self.lbltitulo=ttk.Label(self.labelframe1, text="FOLIO")
+        self.lbltitulo=ttk.Label(self.frame_info_cliente, text="FOLIO", font=estilo)
         self.lbltitulo.grid(column=0, row=0, padx=0, pady=0)
-        self.presenciaAuto = ttk.Label(self.labelframe1, text="", width = 17)#, background = '#CCC')
-        self.presenciaAuto.grid(column=0, row=6, padx=0, pady=0)
-        self.loopDet = ttk.Label(self.pagina1, text="siente auto", width = 17)#, background = '#FD6')
-        self.loopDet.grid(column=1, row=8, padx=0, pady=0)
-        self.BotDet = ttk.Label(self.pagina1, text="Boton", width = 17)#, background = '#CCC')
-        self.BotDet.grid(column=1, row=12, padx=0, pady=0)
-        
+        # self.presenciaAuto = ttk.Label(self.frame_info_cliente, text="", width = 17, font=estilo)#, background = '#CCC')
+
+
+        #####tomar placas del auto
+        self.Placa=tk.StringVar()
+        self.entryPlaca=tk.Entry(self.frame_info_cliente, width=15, textvariable=self.Placa, font=('Arial', 16))
+        self.entryPlaca.grid(column=1, row=1, padx=4, pady=4)
+        self.entryPlaca.bind('<Return>',self.Pensionados)
+
+        self.lblPlaca=ttk.Label(self.frame_info_cliente, text="COLOCAR PLACAS\nNUMERO DE TARJETA", font=estilo)
+        self.lblPlaca.grid(column=0, row=1, padx=0, pady=0)
+
+        self.frame_boton=ttk.LabelFrame(self.label_entrada, text="Placas")
+        self.frame_boton.grid(column=1, row=0, padx=0, pady=0)
+
+        self.boton1=tk.Button(self.frame_boton, text="Generar Entrada", command=self.agregarRegistroRFID, width=13, height=3, anchor="center", background="red",font=estilo)
+        self.boton1.grid(column=0, row=0, padx=4, pady=4)
+
+
+        # self.labelhr=ttk.Label(self.label_entrada, text="HORA ENTRADA")
+        self.labelhr=ttk.Label(self.frame_info_cliente, text="")
+        self.labelhr.grid(column=0, row=2, padx=0, pady=0)
+
+
+        # self.presenciaAuto.grid(column=0, row=6, padx=0, pady=0)
+        # self.loopDet = ttk.Label(self.pagina1, text="siente auto", width = 17)#, background = '#FD6')
+        # self.loopDet.grid(column=1, row=8, padx=0, pady=0)
+        # self.BotDet = ttk.Label(self.pagina1, text="Boton", width = 17)#, background = '#CCC')
+        # self.BotDet.grid(column=1, row=12, padx=0, pady=0)
+
         #self.Reloj = ttk.Label(self.pagina1, text="Hora y fecha", width = 10, background = '#FD6')
         #self.Reloj.grid(column=0, row=6, padx=0, pady=0)
 
-        self.Reloj = ttk.Label(self.pagina1, text="Reloj") #Creación del Label
+        self.frame_inferior = tk.Frame(self.pagina1)
+        self.frame_inferior.grid(column=0, row=1, padx=0, pady=0)
+
+
+        self.Reloj = ttk.Label(self.frame_inferior, text="Reloj") #Creación del Label
         self.Reloj.config(width =10)
         self.Reloj.config(background="white") #Cambiar color de fondo
         self.Reloj.config(font=('Arial', 80)) #Cambiar tipo y tamaño de fuente
         self.Reloj.grid(column=1, row=4, padx=0, pady=0)   
         
-        self.mi_reloj = ttk.Label(self.pagina1, text="Reloj") #Creación del Label
+        self.mi_reloj = ttk.Label(self.frame_inferior, text="Reloj") #Creación del Label
         self.mi_reloj.config(width =10)
         self.mi_reloj.config(background="white") #Cambiar color de fondo
         self.mi_reloj.config(font=('Arial', 80)) #Cambiar tipo y tamaño de fuente
@@ -100,20 +149,7 @@ class FormularioOperacion:
 
 
 
-        #####tomar placas del auto
-        self.Placa=tk.StringVar()
-        self.entryPlaca=tk.Entry(self.labelframe1, width=15, textvariable=self.Placa, font=('Arial', 16))
-        self.entryPlaca.grid(column=1, row=1, padx=4, pady=4)
-        self.entryPlaca.bind('<Return>',self.Pensionados)
 
-        self.lblPlaca=ttk.Label(self.labelframe1, text="COLOCAR PLACAS\nNUMERO DE TARJETA")
-        self.lblPlaca.grid(column=0, row=1, padx=0, pady=0)
-
-
-
-        # self.labelhr=ttk.Label(self.labelframe1, text="HORA ENTRADA")
-        self.labelhr=ttk.Label(self.labelframe1, text="")
-        self.labelhr.grid(column=0, row=2, padx=0, pady=0)
 
         # self.scrolledtext=st.ScrolledText(self.Adentroframe, width=20, height=3)
         # self.scrolledtext.grid(column=1,row=0, padx=4, pady=4)
@@ -128,23 +164,6 @@ class FormularioOperacion:
         # self.botonPent.grid(column=2, row=1, padx=4, pady=4)            
  
 
-        self.boton1=tk.Button(self.labelframe1, text="Generar Entrada", command=self.agregarRegistroRFID, width=13, height=3, anchor="center", background="red",font=('Arial', 12))
-        self.boton1.grid(column=1, row=4, padx=4, pady=4)
-
-        self.frame_tools = ttk.Frame(self.pagina1)#, background = '#CCC')
-        self.frame_tools.grid(column=0, row=0, padx=4, pady=4) 
-
-
-        self.boton_salir=tk.Button(self.frame_tools, text="Salir del programa", command=quit, width=15, height=1, anchor="center", background="red")
-        self.boton_salir.grid(column=0, row=0, padx=4, pady=4) 
-
-        self.frame_info = ttk.LabelFrame(self.frame_tools, text="MENSAJES")#, background = '#CCC')
-        self.frame_info.grid(column=0, row=1, padx=4, pady=4) 
-
-        self.label_informacion = ttk.Label(self.frame_info, text="", font=('Arial', 12), width=18)
-        self.label_informacion.grid(column=0, row=0, padx=4, pady=4)
-
-
         self.entryPlaca.focus() 
 
 
@@ -157,7 +176,7 @@ class FormularioOperacion:
         # else:                
         #         io.output(out1,0)                              
         #         self.loopDet.config(text = "Auto", background = 'red')
-        #         #self.loopDet = ttk.Label(self.labelframe1, text="siente auto", width = 17, background = '#FD6')
+        #         #self.loopDet = ttk.Label(self.label_entrada, text="siente auto", width = 17, background = '#FD6')
         #         #time.sleep (1)                                                                
         #         if io.input(boton):
         #                 self.BotDet.config(text = "Presione Boton",background="#CCC")
@@ -183,7 +202,7 @@ class FormularioOperacion:
         #now1 = now [:10]
         #now2 = now [10:19]       
         self.Reloj.config(text=fecha1)            
-        self.mi_reloj.config(text=hora1)    
+        self.mi_reloj.config(text=f"   {hora1}")    
         self.ventana1.after(60, self.check_inputs)          # activa un timer de 50mSeg.
    
     # def Autdentro(self):
@@ -829,8 +848,8 @@ class FormularioOperacion:
 #     def listado_completo(self):
 #         self.pagina3 = ttk.Frame(self.cuaderno1)
 #         self.cuaderno1.add(self.pagina3, text="Módulo de Corte")
-#         self.labelframe1=ttk.LabelFrame(self.pagina3, text="Autos")
-#         self.labelframe1.grid(column=0, row=0, padx=1, pady=1)
+#         self.label_entrada=ttk.LabelFrame(self.pagina3, text="Autos")
+#         self.label_entrada.grid(column=0, row=0, padx=1, pady=1)
 #         self.labelframe2=ttk.LabelFrame(self.pagina3, text="Generar Corte")
 #         self.labelframe2.grid(column=1, row=0, padx=0, pady=0)
 #         self.labelframe3=ttk.LabelFrame(self.pagina3, text="Consulta Cortes Anteriores")
@@ -922,9 +941,9 @@ class FormularioOperacion:
 #         self.CortesAnteri=tk.StringVar()
 #         self.CortesAnteri=tk.Entry(self.labelframe3, width=20, textvariable=self.CortesAnteri)
 #         self.CortesAnteri.grid(column=1, row=1)
-#         self.boton1=ttk.Button(self.labelframe1, text="Todas las Entradas", command=self.listar)
+#         self.boton1=ttk.Button(self.label_entrada, text="Todas las Entradas", command=self.listar)
 #         self.boton1.grid(column=0, row=0, padx=4, pady=4)
-#         self.boton2=ttk.Button(self.labelframe1, text="Entradas sin corte", command=self.listar1)
+#         self.boton2=ttk.Button(self.label_entrada, text="Entradas sin corte", command=self.listar1)
 #         self.boton2.grid(column=0, row=2, padx=4, pady=4)
 #         self.boton3=tk.Button(self.labelframe2, text="Calcular Corte", command=self.Calcular_Corte, width=15, height=1)
 #         self.boton3.grid(column=2, row=0, padx=4, pady=4)
@@ -932,7 +951,7 @@ class FormularioOperacion:
 #         self.boton4.grid(column=2, row=4, padx=4, pady=4)
 #         self.boton5=tk.Button(self.labelframe3, text="Imprimir salidas  Corte", command=self.desglose_cobrados, width=15, height=3, anchor="center")
 #         self.boton5.grid(column=1, row=2, padx=4, pady=4)
-#         self.scrolledtext1=st.ScrolledText(self.labelframe1, width=30, height=4)
+#         self.scrolledtext1=st.ScrolledText(self.label_entrada, width=30, height=4)
 #         self.scrolledtext1.grid(column=0,row=1, padx=1, pady=1)
 #     def BoletoDentro2(self):
 #         respuesta=self.operacion1.Autos_dentro()
@@ -1243,7 +1262,7 @@ class FormularioOperacion:
                         return False
 
                     elif VigAct is None:
-                        self.label_informacion.config(text="Sin Vigencia Activa")
+                        self.label_informacion.config(text="Sin Vigencia Activa\nTajeta desactivada")
                         self.Placa.set("")
                         self.entryPlaca.focus()
                         return False
