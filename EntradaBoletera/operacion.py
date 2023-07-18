@@ -6,7 +6,7 @@ from tkinter import messagebox as mb
 class Operacion:
 
 	def abrir(self):
-		conexion = pymysql.connect(host="192.168.1.133",
+		conexion = pymysql.connect(host="192.168.1.66",
 						   user="Aurelio",
 						  passwd="RG980320",
 						  database="Parqueadero1")
@@ -343,3 +343,33 @@ class Operacion:
 
 
 
+	####pensionados
+	def ValidarPen(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="SELECT id_cliente FROM Pensionados WHERE Num_tarjeta=%s"
+		cursor.execute(sql,datos)
+		cone.close()
+		return cursor.fetchall()       
+	def ConsultaPensionado(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="SELECT Fecha_vigencia, Estatus, Vigencia, Tolerancia FROM Pensionados where id_cliente=%s"
+		cursor.execute(sql,datos)
+		cone.close()
+		return cursor.fetchall()
+	def UpdPensionado(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="UPDATE Pensionados SET Estatus=%s WHERE id_cliente=%s"
+		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
+		cursor.execute(sql, datos)
+		cone.commit()
+		cone.close()
+	def MovsPensionado(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="INSERT INTO MovimientosPens(idcliente, num_tarjeta, Entrada, Estatus) values (%s,%s,%s,%s)"
+		cursor.execute(sql,datos)
+		cone.commit()
+		cone.close()

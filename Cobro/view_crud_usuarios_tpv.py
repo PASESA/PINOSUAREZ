@@ -20,7 +20,7 @@ class View_CRUD_usuarios:
         # Deshabilita los botones de minimizar y maximizar
         # self.panel_crud.attributes('-toolwindow', True)
 
-        self.panel_crud.title(f'Administración de usuarios -> Pino Suarez')
+        self.panel_crud.title(f'Administración de usuarios -> Monterrey')
 
         # Configura la columna principal del panel para que use todo el espacio disponible
         self.panel_crud.columnconfigure(0, weight=1)
