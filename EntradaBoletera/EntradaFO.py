@@ -107,10 +107,10 @@ class FormularioOperacion:
         self.entryPlaca.grid(column=1, row=1, padx=4, pady=4)
         self.entryPlaca.bind('<Return>',self.Pensionados)
 
-        self.lblPlaca=ttk.Label(self.frame_info_cliente, text="COLOCAR PLACAS\nNUMERO DE TARJETA", font=estilo)
+        self.lblPlaca=ttk.Label(self.frame_info_cliente, text="PLACAS: ", font=estilo)
         self.lblPlaca.grid(column=0, row=1, padx=0, pady=0)
 
-        self.frame_boton=ttk.LabelFrame(self.label_entrada, text="Placas")
+        self.frame_boton=ttk.Frame(self.label_entrada)
         self.frame_boton.grid(column=1, row=0, padx=0, pady=0)
 
         self.boton1=tk.Button(self.frame_boton, text="Generar Entrada", command=self.agregarRegistroRFID, width=13, height=3, anchor="center", background="red",font=estilo)
@@ -1251,23 +1251,24 @@ class FormularioOperacion:
                     Estatus = fila[1]
                     Tolerancia = int(fila[3])
 
-                    hoy = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-                    hoy = datetime.strptime(hoy, "%Y-%m-%d %H:%M:%S")
-                    limite = VigAct + timedelta(days=Tolerancia)
-
-                    if Estatus == 'Adentro':
-                        self.label_informacion.config(text="Ya está Adentro")
-                        self.Placa.set("")
-                        self.entryPlaca.focus()
-                        return False
-
-                    elif VigAct is None:
+                    if VigAct is None:
                         self.label_informacion.config(text="Sin Vigencia Activa\nTajeta desactivada")
                         self.Placa.set("")
                         self.entryPlaca.focus()
                         return False
 
-                    elif hoy >= limite:
+                    elif Estatus == 'Adentro':
+                        self.label_informacion.config(text="Ya está Adentro")
+                        self.Placa.set("")
+                        self.entryPlaca.focus()
+                        return False
+
+                    hoy = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+                    hoy = datetime.strptime(hoy, "%Y-%m-%d %H:%M:%S")
+                    limite = VigAct + timedelta(days=Tolerancia)
+                    print(limite)
+
+                    if hoy >= limite:
                         self.label_informacion.config(text="Vigencia Vencida")
                         self.Placa.set("")
                         self.entryPlaca.focus()
