@@ -5,10 +5,10 @@ class RelojAnalogico:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Reloj Analógico")
-        self.root.geometry("400x500")
+        self.root.geometry("600x500")
 
         self.frame_reloj = tk.LabelFrame(self.root, text="Reloj", padx=10, pady=10)
-        self.frame_reloj.grid(row=0, column=0)
+        self.frame_reloj.grid(row=0, column=1)
 
         self.canvas_background = tk.Canvas(self.frame_reloj, width=300, height=300, bg="white")
         self.canvas_background.pack()
@@ -45,16 +45,32 @@ class RelojAnalogico:
 
         self.x_minute = 150
         self.y_minute = 150
-        self.minute_hand = self.canvas_background.create_line(150, 150, self.x_minute, self.y_minute, width=7, fill="black", tags="minute")
+        self.minute_hand = self.canvas_background.create_line(150, 150, self.x_minute, self.y_minute, width=6, fill="black", tags="minute")
 
         self.frame_tiempo = tk.LabelFrame(self.root, text="Tiempo", padx=10, pady=10)
-        self.frame_tiempo.grid(row=1, column=0)
+        self.frame_tiempo.grid(row=1, column=1)
 
         self.label_tiempo = tk.Label(self.frame_tiempo, text="00:00:00", font=("Arial", 20))
         self.label_tiempo.pack()
 
+        # LabelFrame para los colores y rango
+        self.frame_colores = tk.LabelFrame(self.root, text="Colores y Rangos", padx=10, pady=10)
+        self.frame_colores.grid(row=0, column=0, rowspan=2, padx=10)
+
+        # Colores para cada cuarto de hora
+        colors = ["#FFD700", "#FFA500", "#FF4500", "#FF0000"]
+
+        # Etiquetas informativas y recuadros de colores
+
+        for i in range(4):
+            color_box = tk.Label(self.frame_colores, bg=colors[i], width=10, height=1)
+            color_box.grid(row=i, column=1, sticky="w")
+
+            range_label = tk.Label(self.frame_colores, text="{} - {}".format((i * 15) + 1, (i + 1) * 15), font=("Arial", 12), padx=10)
+            range_label.grid(row=i, column=2, sticky="w")
+
     def update_background(self, minutes, prev_color):
-        quarter = (minutes // 16) % 4
+        quarter = (minutes // 15) % 4
         quarter = int(quarter)
 
         # Colores para cada cuarto de hora
@@ -117,5 +133,5 @@ class RelojAnalogico:
 
 # Ejemplo de uso:
 reloj = RelojAnalogico()
-reloj.update_time(40, 31)  # Actualizar el tiempo en el reloj a 01:30:00
+reloj.update_time(6, 31)  # Actualizar el tiempo en el reloj a 01:30:00
 reloj.open_window()
