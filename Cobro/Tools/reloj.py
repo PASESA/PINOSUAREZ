@@ -7,24 +7,33 @@ class RelojAnalogico:
         self.root.title("Reloj Analógico")
         self.root.geometry("600x500")
 
+
         # LabelFrame para los colores y rango
         self.frame_colores = tk.LabelFrame(self.root, text="Colores y Rangos", padx=10, pady=10)
-        self.frame_colores.grid(row=0, column=0, rowspan=2, padx=10)
+        self.frame_colores.grid(row=0, column=0, rowspan=3, padx=10)
 
         # Colores para cada cuarto de hora
         colors = ["#FFD700", "#FFA500", "#FF4500", "#FF0000"]
 
         # Etiquetas informativas y recuadros de colores
-        self.color_boxes = []
-        self.range_labels = []
         for i in range(4):
             color_box = tk.Label(self.frame_colores, bg=colors[i], width=10, height=1)
             color_box.grid(row=i, column=1, sticky="w")
-            self.color_boxes.append(color_box)
 
             range_label = tk.Label(self.frame_colores, text="{} - {}".format((i * 15) + 1, (i + 1) * 15), font=("Arial", 12), padx=10)
             range_label.grid(row=i, column=2, sticky="w")
-            self.range_labels.append(range_label)
+
+        # Color verde para cuando el tiempo sea menor o igual a una hora
+        color_green_dark = "#006400"
+        color_box = tk.Label(self.frame_colores, bg=color_green_dark, width=10, height=1)
+        color_box.grid(row=4, column=1, sticky="w")
+
+        range_label = tk.Label(self.frame_colores, text="0 - 60", font=("Arial", 12), padx=10)
+        range_label.grid(row=4, column=2, sticky="w")
+
+        # Etiqueta informativa para el color verde
+        label_green = tk.Label(self.frame_colores, text="Menor o igual a 1 hora", font=("Arial", 12))
+        label_green.grid(row=5, column=1, columnspan=2, pady=5)
 
         self.frame_reloj = tk.LabelFrame(self.root, text="Reloj", padx=10, pady=10)
         self.frame_reloj.grid(row=0, column=1)
