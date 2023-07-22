@@ -45,7 +45,7 @@ class RelojAnalogico:
 
         self.x_minute = 150
         self.y_minute = 150
-        self.minute_hand = self.canvas_background.create_line(150, 150, self.x_minute, self.y_minute, width=2, fill="black", tags="minute")
+        self.minute_hand = self.canvas_background.create_line(150, 150, self.x_minute, self.y_minute, width=7, fill="black", tags="minute")
 
         self.frame_tiempo = tk.LabelFrame(self.root, text="Tiempo", padx=10, pady=10)
         self.frame_tiempo.grid(row=1, column=0)
@@ -115,8 +115,7 @@ class RelojAnalogico:
     def open_window(self):
         self.root.mainloop()
 
-
 # Ejemplo de uso:
 reloj = RelojAnalogico()
-reloj.update_time(21, 59)  # Actualizar el tiempo en el reloj a 21:59:00
+reloj.update_time(40, 31)  # Actualizar el tiempo en el reloj a 01:30:00
 reloj.open_window()
