@@ -5,7 +5,6 @@ class RelojAnalogico:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Reloj Analógico")
-        self.root.geometry("600x500")
 
         # Frame contenedor principal
         self.frame_contenedor = tk.Frame(self.root, padx=5, pady=5)
@@ -13,7 +12,7 @@ class RelojAnalogico:
 
         # Frame para el reloj
         self.frame_reloj = tk.LabelFrame(self.frame_contenedor, text="Reloj", padx=5, pady=5)
-        self.frame_reloj.grid(row=0, column=0)
+        self.frame_reloj.grid(row=0, column=0, sticky=tk.NW)
 
         self.canvas_background = tk.Canvas(self.frame_reloj, width=300, height=300, bg="white")
         self.canvas_background.pack()
@@ -45,7 +44,7 @@ class RelojAnalogico:
 
         # Frame para los datos
         self.frame_datos = tk.LabelFrame(self.frame_contenedor, text="Datos", padx=5, pady=5)
-        self.frame_datos.grid(row=0, column=1, padx=5, pady=5)
+        self.frame_datos.grid(row=0, column=1, padx=5, pady=5, sticky=tk.NW)
 
         # Frame para el tiempo y el importe
         self.frame_tiempo_importe = tk.Frame(self.frame_datos)
@@ -169,7 +168,7 @@ class RelojAnalogico:
 
 # Ejemplo de uso:
 reloj = RelojAnalogico()
-reloj.update_time(1, 1, 5000)
+reloj.update_time(1, 48, 5000)
 reloj.open_window()
 
 
