@@ -75,7 +75,7 @@ class RelojAnalogico:
             range_label.grid(row=i, column=2, sticky="w")
 
         # Etiqueta informativa para el color verde
-        label_green = tk.Label(self.frame_colores, text="Menor o igual a 1 hora", font=("Arial", 12))
+        label_green = tk.Label(self.frame_colores, text="Primera hora", font=("Arial", 12))
         label_green.grid(row=5, column=1, columnspan=2, pady=5)
 
         # Color verde para cuando el tiempo sea menor o igual a una hora
@@ -108,7 +108,7 @@ class RelojAnalogico:
 
     def update_background(self, minutes):
         # Obtener el índice del color según el rango de minutos
-        quarter = (minutes // 15) % 4
+        quarter = (minutes // 16) % 4
         quarter = int(quarter)
 
         # Colores para cada cuarto de hora
@@ -143,12 +143,15 @@ class RelojAnalogico:
     def update_time(self, hour=0, minute=0, importe=0):
         self.update_background(0)
         self.update_clock(0)
+        self.hour = hour
+
+        if hour > 2: hour = 2
 
         total_minutes = hour * 60 + minute
         current_minutes = 0
 
         total_triangles = total_minutes + 1
-        time_per_triangle = 2 / total_triangles  # Tiempo total de animación: 2 segundos
+        time_per_triangle = 0.9 / total_triangles  # Tiempo total de animación: 2 segundos
 
         while current_minutes <= total_minutes:
             self.update_background(current_minutes)
@@ -158,7 +161,7 @@ class RelojAnalogico:
             self.root.after(int(time_per_triangle * 1000))  # Convertir a milisegundos
 
         # Actualizar el Label de tiempo con el tiempo final y el importe
-        time_str = "{:02d} Hrs {:02d} Min".format(hour, minute)
+        time_str = "{:02d} Hrs {:02d} Min".format(self.hour, minute)
 
         self.label_tiempo_total.config(text = f"Tiempo Total: {time_str}")
         self.label_importe_total.config(text = f"Importe Total: ${importe}")
@@ -168,7 +171,7 @@ class RelojAnalogico:
 
 # Ejemplo de uso:
 reloj = RelojAnalogico()
-reloj.update_time(1, 48, 5000)
+reloj.update_time(1, 59, 5000)
 reloj.open_window()
 
 
