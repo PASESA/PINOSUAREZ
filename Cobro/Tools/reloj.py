@@ -18,7 +18,7 @@ class RelojAnalogico:
         self.canvas_background.pack()
 
         # Dibujar el círculo del reloj en el canvas de fondo
-        self.canvas_background.create_oval(45, 45, 255, 255, width=8)
+        self.canvas_background.create_oval(45, 45, 255, 255, width=10)
 
         # Dibujar las divisiones de los minutos en el canvas de fondo
         for i in range(60):
@@ -29,18 +29,27 @@ class RelojAnalogico:
             y2 = 150 - 120 * math.sin(angle)
 
             # Dibujar las líneas de división
-            self.canvas_background.create_line(x1, y1, x2, y2)
+            self.canvas_background.create_line(x1, y1, x2, y2, width=2)
 
             # Dibujar los números de los minutos en las líneas de división
             if i % 5 == 0:
                 number = i // 5 * 5
                 x_text = 150 + 130 * math.cos(angle)  # Ajustar la posición de los números
                 y_text = 150 - 130 * math.sin(angle)  # Ajustar la posición de los números
-                self.canvas_background.create_text(x_text, y_text, text=str(number), font=("Arial", 12))
+                self.canvas_background.create_text(x_text, y_text, text=str(number), font=("Arial", 13))
+
+        # Dibujar las divisiones en 4 partes iguales en el canvas de fondo
+        for i in range(4):
+            angle_division = math.radians(i * 90)  # Ángulo para cada división (0, 90, 180, 270 grados)
+            x1_division = 150 + 100 * math.cos(angle_division)
+            y1_division = 150 - 100 * math.sin(angle_division)
+            x2_division = 150 + 120 * math.cos(angle_division)  # Ajustar la longitud de las divisiones
+            y2_division = 150 - 120 * math.sin(angle_division)  # Ajustar la longitud de las divisiones
+            self.canvas_background.create_line(x1_division, y1_division, x2_division, y2_division, width=5, fill="gray")
 
         self.x_minute = 150
         self.y_minute = 150
-        self.minute_hand = self.canvas_background.create_line(150, 150, self.x_minute, self.y_minute, width=6, fill="black", tags="minute")
+        self.minute_hand = self.canvas_background.create_line(150, 150, self.x_minute, self.y_minute, width=5, fill="black", tags="minute")
 
         # Frame para los datos
         self.frame_datos = tk.LabelFrame(self.frame_contenedor, text="Datos", padx=5, pady=5)
@@ -142,7 +151,7 @@ class RelojAnalogico:
 
     def update_time(self, hour=0, minute=0, importe=0):
         self.update_background(0)
-        self.update_clock(0)
+        
         self.hour = hour
 
         if hour > 2: hour = 2
@@ -171,7 +180,7 @@ class RelojAnalogico:
 
 # Ejemplo de uso:
 reloj = RelojAnalogico()
-reloj.update_time(1, 59, 5000)
+reloj.update_time(0, 59, 5000)
 reloj.open_window()
 
 
