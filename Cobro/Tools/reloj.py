@@ -106,10 +106,6 @@ class RelojAnalogico:
             range_label = tk.Label(self.frame_colores, text="{} - {}".format((i * 15) + 1, (i + 1) * 15), font=("Arial", 12), padx=5)
             range_label.grid(row=i, column=2, sticky="w")
 
-
-
-
-
         self.triangles = []  # Lista para mantener los triángulos creados y sus colores
 
     def create_triangle(self, minutes, color):
@@ -129,10 +125,6 @@ class RelojAnalogico:
         self.triangles.append(triangle)
 
     def update_background(self, minutes):
-        # Obtener el índice del color según el rango de minutos
-        quarter = (minutes // 15) % 4
-        quarter = int(quarter)
-
         # Colores para cada cuarto de hora
         colors = ["#FFD700", "#FFA500", "#FF4500", "#FF0000"]
 
@@ -140,12 +132,19 @@ class RelojAnalogico:
         self.canvas_background.delete("previous_area")
         start_angle = 90 - minutes * 6
         extent = minutes * 6
+        color_green_dark = "#006400"
+        color = color_green_dark
 
-        if minutes <= 60:
-            color_green_dark = "#006400"  # Color verde oscuro para los primeros 61 minutos
-            self.canvas_background.create_arc(50, 50, 250, 250, start=start_angle, extent=extent, fill=color_green_dark, outline=color_green_dark, tags="previous_area")
+        if minutes <= 60:color = color_green_dark
         else:
-            self.canvas_background.create_arc(50, 50, 250, 250, start=start_angle, extent=extent, fill=colors[quarter], outline=colors[quarter], tags="previous_area")
+            horas, minutes = divmod(minutes, 60)
+            if minutes < 16 and minutes >= 1: color = colors[0]
+            elif minutes < 31 and minutes >= 16: color = colors[1]
+            elif minutes < 46 and minutes >= 31: color = colors[2]
+            elif minutes <= 59 and minutes >= 46: color = colors[3]
+
+        self.canvas_background.create_arc(50, 50, 250, 250, start=start_angle, extent=extent, fill=color, outline=color, tags="previous_area")
+        self.update_clock(minutes)
 
     def update_clock(self, minutes):
         # Calcular el ángulo de la manecilla de minutos en grados
@@ -164,7 +163,7 @@ class RelojAnalogico:
 
     def update_time(self, entrada = "00:00", salida = "00:00", hour=0, minute=0, importe=0):
         self.update_background(0)
-        
+
         self.hour = hour
 
         if hour > 2: hour = 2
@@ -177,7 +176,6 @@ class RelojAnalogico:
 
         while current_minutes <= total_minutes:
             self.update_background(current_minutes)
-            self.update_clock(current_minutes)
             self.root.update()  # Actualizar la ventana
             current_minutes += 1
             self.root.after(int(time_per_triangle * 1000))  # Convertir a milisegundos
@@ -196,13 +194,15 @@ class RelojAnalogico:
         self.root.mainloop()
 
 # Ejemplo de uso:
-# reloj = RelojAnalogico()
-# entrada = "01:00"
-# salida = "02:30"
-# importe = 5000
+reloj = RelojAnalogico()
+entrada = "01:00:00"
+salida = "02:30:00"
+importe = 100
+hora = 1
+minuto = 15
 
 
-# reloj.update_time(entrada=entrada, salida=salida, hour= 0,minute= 59, importe=importe)
-# reloj.open_window()
+reloj.update_time(entrada=entrada, salida=salida, hour= hora,minute= minuto, importe=importe)
+reloj.open_window()
 
 
