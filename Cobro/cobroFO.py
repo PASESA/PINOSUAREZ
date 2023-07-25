@@ -20,6 +20,7 @@ import serial
 ###-###
 p = Usb(0x04b8, 0x0202, 0)
 penalizacion_con_importe = True
+
 from dateutil.relativedelta import relativedelta
 from view_login import View_Login
 from queries import pensionados
@@ -28,6 +29,8 @@ from view_modificar_pensionado import View_modificar_pensionados
 from queries import pensionados
 import traceback
 import math
+from Tools.reloj import RelojAnalogico
+
 contraseña_pensionados = "P4s3"
 
 valor_tarjeta = 116
@@ -55,6 +58,7 @@ class FormularioOperacion:
         self.listado_completo()
         self.interface_pensionados()
         self.cuaderno1.grid(column=0, row=0, padx=5, pady=5)
+        self.reloj = RelojAnalogico()
         self.ventana1.mainloop()
         ###########################Inicia Pagina1##########################
 
@@ -614,9 +618,16 @@ class FormularioOperacion:
                         self.importe.set(importe)
                         self.IImporte.config(text=importe) 
 
-                        self.entrypromo.focus()  
+                        self.entrypromo.focus()
 
+            self.reloj.update_time(
+                entrada = self.descripcion.get(),
+                salida=self.copia.get(),
+                hour= horas_dentro,
+                minute= minutos_dentro,
+                importe=importe)
 
+            self.reloj.open_window()
 
     def calcular_cambio(self):
         folio = self.folio.get()
@@ -1133,17 +1144,19 @@ class FormularioOperacion:
 
                 self.descripcion.set(respuesta[0][0])
                 self.precio.set(respuesta[0][1])
-                self.CalculaPermanencia()
+                #self.CalculaPermanencia()
 
 
                 fecha = datetime.today()
                 fecha1 = fecha.strftime("%Y-%m-%d %H:%M:%S")
                 fechaActual = datetime.strptime(fecha1, '%Y-%m-%d %H:%M:%S')
+                self.copia.set(fechaActual)
                 date_time_str = str(self.descripcion.get())
                 date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
                 date_time_mod = datetime.strftime(date_time_obj, '%Y/%m/%d/%H/%M/%S')
                 date_time_mod2 = datetime.strptime(date_time_mod, '%Y/%m/%d/%H/%M/%S')
                 ffecha = fechaActual - date_time_mod2
+                self.ffecha.set(ffecha)
                 segundos_vividos = ffecha.seconds
                 horas_dentro, segundos_vividos = divmod(segundos_vividos, 3600)
                 minutos_dentro, segundos_vividos = divmod(segundos_vividos, 60)
@@ -2189,6 +2202,13 @@ class FormularioOperacion:
         self.BoletoDentro()
         self.folio_auxiliar = None
         self.entryfolio.focus()
+
+        self.reloj.update_time(entrada = "00:00:00",
+                                salida = "00:00:00",
+                                hour= 0, 
+                                minute = 0,
+                                importe = 0)
+        self.reloj.open_window()
 
     def vaciar_tabla(self):
         """
