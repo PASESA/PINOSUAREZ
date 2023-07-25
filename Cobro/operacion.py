@@ -7,9 +7,9 @@ class Operacion:
 
 	def abrir(self):
 		conexion=pymysql.connect(host="localhost",
-								 user="root",
-								 passwd="",
-								 database="db_tenayuca")
+								 user="Aurelio",
+								 passwd="RG980320",
+								 database="Parqueadero1")
 
 		return conexion
 
