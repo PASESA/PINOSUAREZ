@@ -3,11 +3,13 @@ import math
 
 class RelojAnalogico:
     def __init__(self):
+        """Inicializa la interfaz del reloj analógico."""
         self.root = tk.Tk()
         self.root.title("Reloj Analógico")
         self.interface()
     
-    def interface(self):
+    def interface(self) -> None:
+        """Configura la interfaz gráfica del reloj analógico."""
         # Frame contenedor principal
         self.frame_contenedor = tk.LabelFrame(self.root, padx=5, pady=5)
         self.frame_contenedor.grid(row=0, column=0)
@@ -130,7 +132,15 @@ class RelojAnalogico:
         self.label_importe_total = tk.Label(self.frame_datos, text="$0.00", font=("Arial", 25))
         self.label_importe_total.grid(row=6, column=0, padx=5, pady=5)
 
-    def update_background(self, minutes):
+    def update_background(self, minutes: int) -> None:
+        """Actualiza el fondo del reloj con el color correspondiente según los minutos transcurridos.
+
+        Args:
+            minutes (int): Minutos transcurridos.
+
+        Returns:
+            None
+        """
         # Colores para cada cuarto de hora
         colors = ["#FFD700", "#FFA500", "#FF4500", "#FF0000"]
 
@@ -152,7 +162,15 @@ class RelojAnalogico:
         self.canvas_background.create_arc(50, 50, 250, 250, start=start_angle, extent=extent, fill=color, outline=color, tags="previous_area")
         self.update_clock(minutes)
 
-    def update_clock(self, minutes):
+    def update_clock(self, minutes: int) -> None:
+        """Actualiza la posición de la manecilla de minutos en el reloj.
+
+        Args:
+            minutes (int): Minutos transcurridos.
+
+        Returns:
+            None
+        """
         # Calcular el ángulo de la manecilla de minutos en grados
         angle_minute = 90 - minutes * 6
 
@@ -167,7 +185,19 @@ class RelojAnalogico:
         # Dibujar la manecilla de minutos en el canvas_background
         self.canvas_background.coords(self.minute_hand, 150, 150, x, y)
 
-    def set_time(self, entrada = "00:00", salida = "00:00", hour=0, minute=0, importe=0):
+    def set_time(self, entrada: str = "00:00", salida: str = "00:00", hour: int = 0, minute: int = 0, importe: float = 0) -> None:
+        """Simula el paso del tiempo y actualiza la interfaz del reloj.
+
+        Args:
+            entrada (str): Hora de entrada.
+            salida (str): Hora de salida.
+            hour (int): Horas transcurridas.
+            minute (int): Minutos transcurridos.
+            importe (float): Importe total.
+
+        Returns:
+            None
+        """
         self.update_background(0)
 
         self.hour = hour
@@ -198,11 +228,25 @@ class RelojAnalogico:
         self.label_tiempo_total.config(text = f"{time_str}")
         self.label_importe_total.config(text = f"${importe}.00")
 
-    def update_data(self, tarifa, importe):
+    def update_data(self, tarifa: str, importe: float) -> None:
+        """Actualiza la información de la tarifa y el importe en la interfaz.
+
+        Args:
+            tarifa (str): Tarifa actual.
+            importe (float): Importe total.
+
+        Returns:
+            None
+        """
         self.label_importe_total.config(text = f"${importe}")
         self.label_tarifa.config(text = f"Tarifa: {tarifa}.00")
     
-    def clear_data(self):
+    def clear_data(self) -> None:
+        """Limpia los datos en la interfaz.
+
+        Returns:
+            None
+        """
         self.label_tiempo_entrada.config(text = f"Entrada: 00:00 Hrs")
         self.label_tiempo_salida.config(text = f"Salida: 00:00 Hrs")
 
