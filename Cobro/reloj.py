@@ -73,9 +73,6 @@ class RelojAnalogico:
         self.frame_contenedor = tk.LabelFrame(self.root, padx=5, pady=5)
         self.frame_contenedor.grid(row=0, column=0)
 
-        self.boton6=tk.Button(self.root, text="detener", command=self.clear_data, width=15, height=3, anchor="center")
-        self.boton6.grid(row=0, column=1)
-
         # Frame para los colores y rango
         self.frame_colores = tk.LabelFrame(self.frame_contenedor, text="Colores y Rangos", padx=5, pady=5)
         self.frame_colores.grid(row=0, column=0, padx=5, pady=5)
@@ -353,10 +350,8 @@ class RelojAnalogico:
 
 
 
-# import time
-# # Ejemplo de uso:
+# Ejemplo de uso:
 # reloj = RelojAnalogico()
-
 
 # entrada = "01:00:00"
 # salida = "02:30:00"
@@ -364,11 +359,7 @@ class RelojAnalogico:
 # hora = 1
 # minuto = 46
 
-
 # reloj.set_time(entrada=entrada, salida=salida, hour= hora,minute= minuto, importe=importe)
-# reloj.open_window()
-# # reloj.clear_data()
 
-# # reloj.update_data("Otra xd", "500")
 
 
