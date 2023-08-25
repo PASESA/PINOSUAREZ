@@ -6,6 +6,10 @@ class RelojAnalogico:
         """Inicializa la interfaz del reloj analógico."""
         self.root = tk.Tk()
         self.root.title("Reloj Analógico")
+        # Colores para cada cuarto de hora
+        self.colors = ["#b9d8f9", "#5ba3f1", "#1270d3", "#062546"]
+        self.color_first_hour = "#062445"
+
         self.interface()
     
     def interface(self) -> None:
@@ -24,9 +28,8 @@ class RelojAnalogico:
         label_hora_inicial.grid(row=0, column=0, columnspan=2, pady=5)
 
         # Color verde para cuando el tiempo sea menor o igual a una hora
-        color_green_dark = "#006400"
-        color_box = tk.Label(self.frame_colores, bg=color_green_dark, width=12, height=2)
-        color_box.grid(row=1, column=1, sticky="w")
+        self.color_box = tk.Label(self.frame_colores, bg=self.color_first_hour, width=12, height=2)
+        self.color_box.grid(row=1, column=1, sticky="w")
 
         range_label = tk.Label(self.frame_colores, text="0 - 60  Minutos", font=("Arial", 15), padx=5)
         range_label.grid(row=1, column=0, sticky="w")
@@ -34,16 +37,16 @@ class RelojAnalogico:
         # Etiqueta informativa para el color verde
         label_hora_despues = tk.Label(self.frame_colores, text="Despues de la primera hora", font=("Arial", 15))
         label_hora_despues.grid(row=2, column=0, columnspan=2, pady=5)
-        # Colores para cada cuarto de hora
-        colors = ["#FFD700", "#FFA500", "#FF4500", "#FF0000"]
 
         # Etiquetas informativas y recuadros de colores
         for i in range(4):
             range_label = tk.Label(self.frame_colores, text=f"{(i * 15) + 1} - {(i + 1) * 15}  Minutos", font=("Arial", 15), padx=5)
             range_label.grid(row=i+3, column=0, sticky="w")
 
-            color_box = tk.Label(self.frame_colores, bg=colors[i], width=12, height=2)
-            color_box.grid(row=i+3, column=1, sticky="w")
+            self.color_box = tk.Label(self.frame_colores, bg=self.colors[i], width=12, height=2)
+            self.color_box.grid(row=i+3, column=1, sticky="w")
+
+
 
 
         # Frame para el reloj
@@ -132,6 +135,7 @@ class RelojAnalogico:
         self.label_importe_total = tk.Label(self.frame_datos, text="$0.00", font=("Arial", 25))
         self.label_importe_total.grid(row=6, column=0, padx=5, pady=5)
 
+
     def update_background(self, minutes: int) -> None:
         """Actualiza el fondo del reloj con el color correspondiente según los minutos transcurridos.
 
@@ -141,23 +145,21 @@ class RelojAnalogico:
         Returns:
             None
         """
-        # Colores para cada cuarto de hora
-        colors = ["#FFD700", "#FFA500", "#FF4500", "#FF0000"]
+
 
         # Dibujar el área anterior a la manecilla de minutos con el color correspondiente
         self.canvas_background.delete("previous_area")
         start_angle = 90 - minutes * 6
         extent = minutes * 6
-        color_green_dark = "#006400"
-        color = color_green_dark
+        color = self.color_first_hour
 
-        if minutes <= 60:color = color_green_dark
+        if minutes <= 60:color = self.color_first_hour
         else:
             _, minutes = divmod(minutes, 60)
-            if minutes < 16 and minutes >= 1: color = colors[0]
-            elif minutes < 31 and minutes >= 16: color = colors[1]
-            elif minutes < 46 and minutes >= 31: color = colors[2]
-            elif minutes <= 59 and minutes >= 46: color = colors[3]
+            if minutes < 16 and minutes >= 1: color = self.colors[0]
+            elif minutes < 31 and minutes >= 16: color = self.colors[1]
+            elif minutes < 46 and minutes >= 31: color = self.colors[2]
+            elif minutes <= 59 and minutes >= 46: color = self.colors[3]
 
         self.canvas_background.create_arc(50, 50, 250, 250, start=start_angle, extent=extent, fill=color, outline=color, tags="previous_area")
         self.update_clock(minutes)
@@ -228,6 +230,7 @@ class RelojAnalogico:
         self.label_tiempo_total.config(text = f"{time_str}")
         self.label_importe_total.config(text = f"${importe}.00")
 
+
     def update_data(self, tarifa: str, importe: float) -> None:
         """Actualiza la información de la tarifa y el importe en la interfaz.
 
@@ -253,17 +256,19 @@ class RelojAnalogico:
         self.label_tiempo_total.config(text = f"00 Hrs 00 Min")
         self.label_importe_total.config(text = f"$0.00")
 
-
     def open_window(self):
         self.root.mainloop()
+
+
+
 
 # Ejemplo de uso:
 reloj = RelojAnalogico()
 entrada = "01:00:00"
 salida = "02:30:00"
-importe = 100
+importe = "100"
 hora = 2
-minuto = 1
+minuto = 24
 
 
 reloj.set_time(entrada=entrada, salida=salida, hour= hora,minute= minuto, importe=importe)

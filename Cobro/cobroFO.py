@@ -26,6 +26,7 @@ import traceback
 import math
 
 import atexit
+from reloj import RelojAnalogico
 
 contraseña_pensionados = "P4s3"
 
@@ -46,6 +47,8 @@ from controller_email import main
 class FormularioOperacion:
     def __init__(self):
         atexit.register(main)
+
+        self.reloj = RelojAnalogico()
 
         self.controlador_crud_pensionados = Pensionados()
         self.folio_auxiliar = None
@@ -623,6 +626,9 @@ class FormularioOperacion:
             elif minutos > 3:    
                 importe = (self.dias_dentro * 912) + (self.horas_dentro * 38) + 38
 
+        self.reloj.set_time(entrada=Entrada, salida=Salida, hour= self.horas_dentro, minute= self.minutos_dentro, importe=importe)
+        self.reloj.open_window()
+
         # Establecer el importe y mostrarlo
         self.mostrar_importe(importe)
 
@@ -826,6 +832,7 @@ class FormularioOperacion:
         if TipoPromo == "PROM 1":
             #LOGICA DE LA PROMOCIÓN 
             text_promo = "PROM1"
+            importe = 10000
 
         elif TipoPromo == "PROM 2":
             #LOGICA DE LA PROMOCIÓN 
@@ -840,6 +847,7 @@ class FormularioOperacion:
         self.TarifaPreferente.set(text_promo)
         self.promo.set("")
         self.mostrar_importe(importe)
+        self.reloj.update_data(text_promo, importe)
 
 
 
@@ -2440,6 +2448,7 @@ class FormularioOperacion:
         self.Estatus.set("")
         self.vaciar_tipo_pago()
         self.ver_pensionados()
+        self.reloj.clear_data()
 
 
     def calcular_pago_media_pension(self, monto):
