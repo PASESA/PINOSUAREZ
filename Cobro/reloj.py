@@ -67,17 +67,18 @@ class RelojAnalogico:
         self.blink_interval = 500
 
         self.blinking_label = BlinkingLabel()
+        self.root.geometry("+1650+0") 
 
         self.interface()
 
     def interface(self) -> None:
         """Configura la interfaz gráfica del reloj analógico."""
         # Frame contenedor principal
-        self.frame_contenedor = tk.LabelFrame(self.root, padx=5, pady=5)
-        self.frame_contenedor.grid(row=0, column=0)
+        frame_contenedor = tk.LabelFrame(self.root, padx=5, pady=5)
+        frame_contenedor.grid(row=0, column=0)
 
         # Frame para los colores y rango
-        self.frame_colores = tk.LabelFrame(self.frame_contenedor, text="Colores y Rangos", padx=5, pady=5)
+        self.frame_colores = tk.LabelFrame(frame_contenedor, text="Colores y Rangos", padx=5, pady=5)
         self.frame_colores.grid(row=0, column=0, padx=5, pady=5)
 
         # Etiqueta informativa para el color verde
@@ -122,7 +123,7 @@ class RelojAnalogico:
 
 
         # Frame para el reloj
-        frame_total_reloj = tk.LabelFrame(self.frame_contenedor, text="Reloj", padx=5, pady=5)
+        frame_total_reloj = tk.LabelFrame(frame_contenedor, text="Reloj", padx=5, pady=5)
         frame_total_reloj.grid(row=0, column=1, sticky=tk.NW)
 
         frame_horas = tk.Frame(frame_total_reloj, padx=5, pady=5)
@@ -172,7 +173,7 @@ class RelojAnalogico:
         self.minute_hand = self.canvas_background.create_line(150, 150, self.x_minute, self.y_minute, width=5, fill="black", tags="minute")
 
         # Frame para los datos
-        self.frame_datos = tk.LabelFrame(self.frame_contenedor, text="Datos", padx=5, pady=5)
+        self.frame_datos = tk.LabelFrame(frame_contenedor, text="Datos", padx=5, pady=5)
         self.frame_datos.grid(row=0, column=2, padx=5, pady=5)
 
 
@@ -207,28 +208,29 @@ class RelojAnalogico:
         self.label_importe_total = tk.Label(self.frame_datos, text="$0.00", font=("Arial", 25))
         self.label_importe_total.grid(row=6, column=0, padx=5, pady=5)
 
-        self.update_background(0)
+        self.update_background(0, False)
 
-    def update_background(self, minutes: int) -> None:
+    def update_background(self, all_minutes: int, more_than_hour: bool) -> None:
         """Actualiza el fondo del reloj con el color correspondiente según los minutos transcurridos.
 
         Args:
-            minutes (int): Minutos transcurridos.
+            all_minutes (int): Minutos transcurridos.
 
         Returns:
             None
         """
         # Dibujar el área anterior a la manecilla de minutos con el color correspondiente
         self.canvas_background.delete("previous_area")
-        start_angle = 90 - minutes * 6
-        extent = minutes * 6
-        color = self.color_first_hour
+        start_angle = 90 - all_minutes * 6
+        extent = all_minutes * 6
+        color = None
 
-        if minutes <= 60:
+        if not more_than_hour:
             color = self.color_first_hour
             label_select = self.color_box_0
+
         else:
-            _, minutes = divmod(minutes, 60)
+            _, minutes = divmod(all_minutes, 60)
             if minutes < 16 and minutes >= 1:
                 color = self.colors[0]
                 label_select = self.color_box_1
@@ -238,12 +240,12 @@ class RelojAnalogico:
             elif minutes < 46 and minutes >= 31:
                 color = self.colors[2]
                 label_select = self.color_box_3
-            elif minutes <= 59 and minutes >= 46:
+            else:
                 color = self.colors[3]
                 label_select = self.color_box_4
 
         self.canvas_background.create_arc(50, 50, 250, 250, start=start_angle, extent=extent, fill=color, outline=color, tags="previous_area")
-        self.update_clock(minutes)
+        self.update_clock(all_minutes)
 
         return label_select
 
@@ -284,20 +286,26 @@ class RelojAnalogico:
             None
         """
         label_select = None
-        self.update_background(0)
+        self.update_background(0, False)
 
         self.hour = hour
-
-        if hour >= 1: hour = 1
+        more_than_hour = False
+        if hour >= 1:
+            hour = 1
+            more_than_hour = True
+            if self.hour == 1 and minute == 0:
+                more_than_hour = False
 
         total_minutes = hour * 60 + minute
         current_minutes = 0
-        if hour == 0 and minute <= 59: total_minutes = 59
+
+        if self.hour == 0 and minute < 60:
+            total_minutes = 60
 
         time_per_frame = 0.5 / (total_minutes)
 
         while current_minutes <= total_minutes:
-            label_select = self.update_background(current_minutes)
+            label_select = self.update_background(current_minutes, more_than_hour)
             self.root.update()  # Actualizar la ventana
             current_minutes += 1
             self.root.after(int(time_per_frame * 1000))  # Convertir a milisegundos
@@ -354,15 +362,15 @@ class RelojAnalogico:
 
 
 # Ejemplo de uso:
-# reloj = RelojAnalogico()
+reloj = RelojAnalogico()
 
-# entrada = "01:00:00"
-# salida = "02:30:00"
-# importe = "100"
-# hora = 1
-# minuto = 46
+entrada = "01:00:00"
+salida = "02:30:00"
+importe = "100"
+hora = 1
+minuto = 1
 
-# reloj.set_time(entrada=entrada, salida=salida, hour= hora,minute= minuto, importe=importe)
-
+reloj.set_time(entrada=entrada, salida=salida, hour= hora,minute= minuto, importe=importe)
+reloj.open_window()
 
 
