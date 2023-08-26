@@ -30,6 +30,7 @@ class BlinkingLabel:
             label (tk.Label): El widget Label al que se aplicará el parpadeo.
             interval_ms (int): El intervalo de tiempo en milisegundos para el parpadeo.
         """
+        self.stop_blinking()
         self.label = label
 
         self._original_bg = self.label.cget("bg")
@@ -45,7 +46,9 @@ class BlinkingLabel:
         Returns:
             None
         """
-        self.label.config(bg=self._original_bg)
+        if self.label is not None:
+            self.label.config(bg=self._original_bg)
+
         if self._blink_id is not None:
             # Cancela el próximo parpadeo si está programado
             self.label.after_cancel(self._blink_id)
@@ -66,7 +69,7 @@ class RelojAnalogico:
         self.blinking_label = BlinkingLabel()
 
         self.interface()
-    
+
     def interface(self) -> None:
         """Configura la interfaz gráfica del reloj analógico."""
         # Frame contenedor principal
@@ -267,7 +270,7 @@ class RelojAnalogico:
         # Dibujar la manecilla de minutos en el canvas_background
         self.canvas_background.coords(self.minute_hand, 150, 150, x, y)
 
-    def set_time(self, entrada: str = "00:00", salida: str = "00:00", hour: int = 0, minute: int = 0, importe: float = 0) -> None:
+    def set_time(self, entrada: str = "00:00", salida: str = "00:00", hour: int = 0, minute: int = 0, importe: int = 0) -> None:
         """Simula el paso del tiempo y actualiza la interfaz del reloj.
 
         Args:
@@ -275,7 +278,7 @@ class RelojAnalogico:
             salida (str): Hora de salida.
             hour (int): Horas transcurridas.
             minute (int): Minutos transcurridos.
-            importe (float): Importe total.
+            importe (int): Importe total.
 
         Returns:
             None
@@ -315,17 +318,17 @@ class RelojAnalogico:
         self.label_importe_total.config(text = f"${importe}.00")
 
 
-    def update_data(self, tarifa: str, importe: float) -> None:
+    def update_data(self, tarifa: str, importe: int) -> None:
         """Actualiza la información de la tarifa y el importe en la interfaz.
 
         Args:
             tarifa (str): Tarifa actual.
-            importe (float): Importe total.
+            importe (int): Importe total.
 
         Returns:
             None
         """
-        self.label_importe_total.config(text = f"${importe}")
+        self.label_importe_total.config(text = f"${importe}.00")
         self.label_tarifa.config(text = f"Tarifa: {tarifa}")
     
     def clear_data(self) -> None:
