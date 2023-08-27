@@ -65,7 +65,50 @@ class RelojAnalogico:
         self.root = tk.Toplevel()
         self.root.title("Reloj Analógico")
         # Colores para cada cuarto de hora
-        self.colors = ["#b9d8f9", "#5ba3f1", "#1270d3", "#062546"]
+        self.colors = [
+            "#b9d8f9", # Cielo Azul (Primer cuarto de hora)
+            "#5ba3f1", # Azul Marino (Segundo cuarto de hora)
+            "#1270d3", # Noche Azul (Tercer cuarto de hora)
+            "#062546"  # Profundo Azul (Último cuarto de hora)
+        ]
+        self.colors = [
+            "#FFCCCB",  # Rosa claro (Primer cuarto de hora)
+            "#FF6B6B",  # Rosa intenso (Segundo cuarto de hora)
+            "#FF5733",  # Rojo anaranjado (Tercer cuarto de hora)
+            "#FF4500"   # Rojo intenso (Último cuarto de hora)
+        ]
+        self.colors = [
+            "#91BFDB",  # Azul claro (Primer cuarto de hora)
+            "#3498DB",  # Azul intenso (Segundo cuarto de hora)
+            "#E74C3C",  # Rojo intenso (Tercer cuarto de hora)
+            "#2ECC71"   # Verde intenso (Último cuarto de hora)
+        ]
+        self.colors = [
+            "#3498DB",  # Azul claro (Primer cuarto de hora)
+            "#2980B9",  # Azul medio (Segundo cuarto de hora)
+            "#1F618D",  # Azul oscuro (Tercer cuarto de hora)
+            "#154360"   # Azul más oscuro (Último cuarto de hora)
+        ]
+        self.colors = [
+            "#E6E6FA",  # Lavanda (Primer cuarto de hora)
+            "#CCCCE0",  # Lavanda más claro (Segundo cuarto de hora)
+            "#B9B9FF",  # Púrpura claro (Tercer cuarto de hora)
+            "#800080"   # Púrpura (Cuarto cuarto de hora)
+        ]
+        self.colors = [
+            "#DCDCDC",  # Gris claro (Primer cuarto de hora)
+            "#A9A9A9",  # Gris medio (Segundo cuarto de hora)
+            "#808080",  # Gris oscuro (Tercer cuarto de hora)
+            "#696969"   # Gris más oscuro (Cuarto cuarto de hora)
+        ]
+        self.colors  = [
+            "#E6E6FA",  # Morado claro (Primer cuarto de hora)
+            "#D8BFD8",  # Morado medio claro (Segundo cuarto de hora)
+            "#9370DB",  # Morado medio oscuro (Tercer cuarto de hora)
+            "#6A5ACD"   # Morado oscuro (Cuarto cuarto de hora)
+        ]
+
+
         self.color_first_hour = "#062445"
         self.blink_interval = 500
 

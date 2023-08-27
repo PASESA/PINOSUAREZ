@@ -27,6 +27,7 @@ import math
 
 import atexit
 from reloj import RelojAnalogico
+from time import sleep
 
 contraseña_pensionados = "P4s3"
 
@@ -38,17 +39,19 @@ logo_1 = "LOGO1.jpg"
 AutoA = "AutoA.png"
 
 qr_imagen = "reducida.png"
-PROMOCIONES = ('PROM 1', 'PROM 2')
+PROMOCIONES = ('PROM 100', 'PROM 2')
 
 nombre_estacionamiento = 'Pino Suarez'
 
 from controller_email import main
 
+show_clock = True
+send_data = True
+
 class FormularioOperacion:
     def __init__(self):
-        atexit.register(main)
-
-        self.reloj = RelojAnalogico()
+        if send_data:
+            atexit.register(main)
 
         self.controlador_crud_pensionados = Pensionados()
         self.folio_auxiliar = None
@@ -63,6 +66,11 @@ class FormularioOperacion:
         self.listado_completo()
         self.interface_pensionados()
         self.cuaderno1.grid(column=0, row=0, padx=5, pady=5)
+
+        if show_clock:
+            self.reloj = RelojAnalogico()
+            self.ventana1.geometry("+200+0")
+
         self.ventana1.mainloop()
         ###########################Inicia Pagina1##########################
 
@@ -415,6 +423,9 @@ class FormularioOperacion:
             self.promo.set("")
             self.PonerFOLIO.set("")
 
+            if show_clock:
+                self.reloj.update_data(self.TarifaPreferente.get(), importe)
+
         else:
             # Limpiar campos y mostrar mensaje de error
             self.limpiar_campos()
@@ -591,8 +602,8 @@ class FormularioOperacion:
         self.dias_dentro = TiempoTotal.days
         segundos_vividos = TiempoTotal.seconds
 
-        self.horas_dentro, segundos_vividos = divmod(segundos_vividos, 3600)
-        self.minutos_dentro, segundos_vividos = divmod(segundos_vividos, 60)
+        self.horas_dentro, _ = divmod(segundos_vividos, 3600)
+        self.minutos_dentro, _ = divmod(segundos_vividos, 60)
 
         self.TiempoTotal.set(TiempoTotal)
         self.TiempoTotal_auxiliar.set(self.TiempoTotal.get()[:-3])
@@ -626,14 +637,18 @@ class FormularioOperacion:
             elif minutos > 3:    
                 importe = (self.dias_dentro * 912) + (self.horas_dentro * 38) + 38
 
-        self.reloj.set_time(entrada=Entrada, salida=Salida, hour= self.horas_dentro, minute= self.minutos_dentro, importe=importe)
-        self.reloj.open_window()
 
         # Establecer el importe y mostrarlo
         self.mostrar_importe(importe)
 
         # Coloca el foco en el campo entrypromo
         self.entrypromo.focus()
+
+        if show_clock:
+            self.reloj.set_time(entrada=str(Entrada), salida=str(Salida), hour= self.horas_dentro, minute= self.minutos_dentro, importe=importe)
+
+            # Espera un segundo para que de tiempo a cargar la animacion
+            sleep(0.5)
 
     def calcular_cambio(self):
         folio = self.folio.get()
@@ -829,7 +844,7 @@ class FormularioOperacion:
         importe = int(self.importe.get())
 
         # Aplica diferentes descuentos según el tipo de promoción
-        if TipoPromo == "PROM 1":
+        if TipoPromo == "PROM 100":
             #LOGICA DE LA PROMOCIÓN 
             text_promo = "PROM1"
             importe = 10000
@@ -847,7 +862,9 @@ class FormularioOperacion:
         self.TarifaPreferente.set(text_promo)
         self.promo.set("")
         self.mostrar_importe(importe)
-        self.reloj.update_data(text_promo, importe)
+
+        if show_clock:
+            self.reloj.update_data(text_promo, importe)
 
 
 
@@ -2306,6 +2323,8 @@ class FormularioOperacion:
         self.BoletoDentro()
         self.BoletoDentro2()
 
+        if show_clock:
+            self.reloj.clear_data()
 
     def vaciar_tabla(self):
         """Vacía la tabla de datos.
@@ -2448,7 +2467,6 @@ class FormularioOperacion:
         self.Estatus.set("")
         self.vaciar_tipo_pago()
         self.ver_pensionados()
-        self.reloj.clear_data()
 
 
     def calcular_pago_media_pension(self, monto):
