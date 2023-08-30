@@ -609,6 +609,7 @@ class FormularioOperacion:
         self.TiempoTotal_auxiliar.set(self.TiempoTotal.get()[:-3])
 
         # Calcula la tarifa y el importe a pagar
+        minutos = 0
         if self.minutos_dentro == 0:
             minutos = 0
         elif self.minutos_dentro < 16 and self.minutos_dentro >= 1:
