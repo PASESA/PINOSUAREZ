@@ -47,7 +47,7 @@ nombre_estacionamiento = 'Pino Suarez'
 from controller_email import main
 
 show_clock = False
-send_data = False
+send_data = True
 
 class FormularioOperacion:
     def __init__(self):
@@ -1276,7 +1276,7 @@ class FormularioOperacion:
         ultiCort1 = ultiCort1.strip('),')
         if len(ultiCort1) <= 19:   
 
-            ultiCort1= datetime.strptime(ultiCort1, '%Y, %m, %d, %H, %M')
+            ultiCort1= datetime.strptime(ultiCort1, '%Y, %m, %d, %H, %M, %S')
         else:
             ultiCort1= datetime.strptime(ultiCort1, '%Y, %m, %d, %H, %M, %S')
 
@@ -1319,7 +1319,7 @@ class FormularioOperacion:
         ######el importe se obtiene de la suma
         ImpCorte2 =str(self.ImporteCorte.get(),)
         Im38=ImpCorte2.strip('(,)')
-        AEE=(self.operacion1.CuantosAutosdentro())
+        AEE=(self.DB.CuantosAutosdentro())
         maxnumid=str(self.DB.MaxfolioEntrada())
         maxnumid = "".join([x for x in maxnumid if x.isdigit()])#con esto solo obtenemos los numeros
         maxnumid=int(maxnumid)
