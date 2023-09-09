@@ -40,13 +40,14 @@ AutoA = "AutoA.png"
 
 qr_imagen = "reducida.png"
 PROMOCIONES = ('PROM 100', 'PROM 2')
+font_promo = ('Arial', 9, "bold")
 
 nombre_estacionamiento = 'Pino Suarez'
 
 from controller_email import main
 
-show_clock = True
-send_data = True
+show_clock = False
+send_data = False
 
 class FormularioOperacion:
     def __init__(self):
@@ -184,9 +185,44 @@ class FormularioOperacion:
         self.label4=ttk.Label(self.labelframe2, text="Salio:")
         self.label4.grid(column=0, row=2, padx=4, pady=4)
 
+        # Crear el LabelFrame "promociones"
+        self.frame_promociones = tk.LabelFrame(self.FOLIO_QR, text="Promociones")
+        self.frame_promociones.grid(column=0, row=1, padx=5, pady=10, sticky=tk.NSEW)
 
-        self.labelpromo=ttk.LabelFrame(self.FOLIO_QR, text="Leer el QR de Promocion")
-        self.labelpromo.grid(column=0, row=1, padx=5, pady=10, sticky=tk.NW)
+        self.frame_promociones_botones = Frame(self.frame_promociones)
+        self.frame_promociones_botones.grid(column=0, row=0, padx=5, pady=10, sticky=tk.NSEW)
+
+        # Botón "Promo Taqueria"
+        self.button_promo_taqueria = tk.Button(
+            self.frame_promociones_botones,
+            text="Promo Taqueria\n'A La MEXICANA'",
+            command=self.promo_taqueria,
+            # width=10,
+            height=2,
+            anchor="center",
+            bg="#FF8000",
+            font=font_promo
+        )
+        self.button_promo_taqueria.grid(column=0, row=0, padx=5, pady=5)
+
+        # Botón "Promo Cheleria"
+        self.button_promo_cheleria = tk.Button(
+            self.frame_promociones_botones,
+            text="Promo Cheleria\n'CHELERIA 27 AMIGOS'",
+            command=self.promo_cheleria,
+            # width=10,
+            height=2,
+            anchor="center",
+            bg="#3399FF",
+            font=font_promo
+        )
+        self.button_promo_cheleria.grid(column=1, row=0, padx=5, pady=5)
+
+        self.frame_promociones_campos = Frame(self.frame_promociones)
+        self.frame_promociones_campos.grid(column=0, row=1, padx=5, pady=5, sticky=tk.NSEW)
+
+        self.labelpromo=ttk.LabelFrame(self.frame_promociones_campos, text="Leer el QR de Promocion")
+        self.labelpromo.grid(column=0, row=1, padx=5, pady=5, sticky=tk.NW)
         self.promolbl1=ttk.Label(self.labelpromo, text="Codigo QR")
         self.promolbl1.grid(column=0, row=0, padx=4, pady=4)
         self.promolbl2=ttk.Label(self.labelpromo, text="Tipo Prom")
@@ -602,13 +638,14 @@ class FormularioOperacion:
         self.dias_dentro = TiempoTotal.days
         segundos_vividos = TiempoTotal.seconds
 
-        self.horas_dentro, _ = divmod(segundos_vividos, 3600)
-        self.minutos_dentro, _ = divmod(segundos_vividos, 60)
+        self.horas_dentro, segundos_restantes = divmod(segundos_vividos, 3600)
+        self.minutos_dentro, _ = divmod(segundos_restantes, 60)
 
         self.TiempoTotal.set(TiempoTotal)
         self.TiempoTotal_auxiliar.set(self.TiempoTotal.get()[:-3])
 
         # Calcula la tarifa y el importe a pagar
+
         minutos = 0
         if self.minutos_dentro == 0:
             minutos = 0
@@ -627,7 +664,6 @@ class FormularioOperacion:
         if self.dias_dentro == 0 and self.horas_dentro == 0:
             importe = 38
 
-
         else:
             if minutos <= 2:    
                 importe = (self.dias_dentro * 912) + (self.horas_dentro * 38)+(minutos * 13)
@@ -637,7 +673,6 @@ class FormularioOperacion:
 
             elif minutos > 3:    
                 importe = (self.dias_dentro * 912) + (self.horas_dentro * 38) + 38
-
 
         # Establecer el importe y mostrarlo
         self.mostrar_importe(importe)
@@ -2639,6 +2674,61 @@ class FormularioOperacion:
         """
         self.importe.set(text_importe)
         self.IImporte.config(text=self.importe.get())
+
+    def aplicar_promo_60_x_2(self, promo:str):
+        if self.folio.get() == "":
+            mb.showwarning("Error", "Primero escanee un boleto para aplicar la promoción")
+            self.limpiar_campos()
+            return
+
+        # Valida si el boleto está cobrado como perdido
+        TarifaPreferente = self.TarifaPreferente.get()
+        if TarifaPreferente == "Per":
+            mb.showerror("Error", "A los boletos cobrados como perdidos no se pueden aplicar promociones")
+            self.promo.set('')
+            self.promo_auxiliar.set('')
+            self.entrypromo.focus()
+            return
+
+        # Valida que solo se pueda aplicar una promoción por boleto
+        if TarifaPreferente not in ["Normal", "Danado"]:
+            mb.showerror("Error", "Solo se puede aplicar una promoción por boleto")
+            self.promo.set('')
+            self.entrypromo.focus()
+            return
+
+        # Valida si realmente se quiere aplicar la promoción
+        if mb.askyesno("Advertencia", f"¿Esta seguro de querer aplicar la promoción [{promo}] a este boleto?") is False:
+            return
+
+        text_promo = promo
+
+        if self.horas_dentro <= 2:
+            if self.horas_dentro == 2 and self.minutos_dentro > 0:
+                importe = int(self.importe.get()) - 16
+
+            else:
+                importe = 60
+        else:
+            importe = int(self.importe.get()) - 16
+
+
+        # Añade "Danado" a la descripción de la promoción si el boleto está marcado como "Danado"
+        if TarifaPreferente == "Danado":
+            text_promo = text_promo + TarifaPreferente
+
+        # Establece el tipo de promoción y muestra el importe actualizado
+        self.TarifaPreferente.set(text_promo)
+
+        # Establecer el importe y mostrarlo
+        self.mostrar_importe(importe)
+
+    def promo_taqueria(self):
+        self.aplicar_promo_60_x_2("Taqueria")
+
+    def promo_cheleria(self):
+        self.aplicar_promo_60_x_2("Cheleria")
+
 
 # aplicacion1=FormularioOperacion()
 
