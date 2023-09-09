@@ -2641,3 +2641,4 @@ class FormularioOperacion:
 
 # aplicacion1=FormularioOperacion()
 
+
