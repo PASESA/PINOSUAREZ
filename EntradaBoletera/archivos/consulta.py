@@ -292,7 +292,7 @@ class FormularioOperacion:
         f.close()
         #aqui lo imprimimos
         #p = Usb(0x04b8, 0x0202, 0)
-        p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+        p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.set("center")
         p.text("BOLETO DE ENTRADA\n")
         folioZZ=('FOLIO 000' + masuno)
@@ -476,7 +476,7 @@ class FormularioOperacion:
            self.PrTi.set("Per")
            self.Comprobante()
            #p = Usb(0x04b8, 0x0202, 0)
-           p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+           p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
            p.text('Boleto Perdido\n')
            FoliodelPerdido = str(self.PonerFOLIO.get(),)
            p.text('Folio boleto cancelado: '+FoliodelPerdido+'\n')
@@ -615,7 +615,7 @@ class FormularioOperacion:
 
     def Comprobante(self):
         #p = Usb(0x04b8, 0x0202, 0)
-        p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+        p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.text("Comprobante de pago\n")
         p.image("LOGO1.jpg")
         #Compro de comprobante
@@ -964,7 +964,7 @@ class FormularioOperacion:
         print (resp.find("Normal"))
         dato2 = resp.replace("), ", "\n")
         print('vemos que poner auqie',dato2)
-        p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+        p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.text("El Numero de corte es "+Numcorte+'\n')
         print("El Numero de corte es "+Numcorte+'\n')
         for fila in respuesta:
@@ -1043,7 +1043,7 @@ class FormularioOperacion:
            self.PrTi.set("CDO")
            self.promo.set("")
            #p = Usb(0x04b8, 0x0202, 0)
-           p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+           p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
            p.text('Boleto Cancelado\n')
            FoliodelCancelado = str(self.FolioCancelado.get(),)
            p.text('Folio boleto cancelado: '+FoliodelCancelado+'\n')
@@ -1078,7 +1078,7 @@ class FormularioOperacion:
         for fila in respuesta:
             self.scrolledtext1.insert(tk.END, "Entrada num: "+str(fila[0])+"\nEntro: "+str(fila[1])+"\nSalio: "+str(fila[2])+"\nImporte: "+str(fila[3])+"\n\n")
             #p = Usb(0x04b8, 0x0202, 0)
-            p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+            p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
             p.text('Entrada Num :')
             p.text(str(fila[0]))
             p.text('\n')
@@ -1146,7 +1146,7 @@ class FormularioOperacion:
         ActEntradas = (maxnum, vobo )
         self.label4.configure(text=("Numero de corte",maxnum))
         #p = Usb(0x04b8, 0x0202, 0)
-        p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+        p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.text("CORTE Num "+maxnum+"\n")
         p.text('IMPORTE: $ '+Im38+'\n')
         #p.text('IMPORTE: $ '+ImpCorte2+'\n')
@@ -1212,7 +1212,7 @@ class FormularioOperacion:
         self.scrolledtxt2.delete("1.0", tk.END)
         #mb.showinfo("respuesta", respuesta)
         #p = Usb(0x04b8, 0x0202, 0)
-        p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
+        p = Usb(0x04b8, 0x0202, 0)#esta es la impresora con sus valores que se obtienen con lsusb
         p.text("Cantidad e Importes "+'\n')
         p.text("Cantidad - Tarifa - valor C/U - Total "+'\n')
         for fila in respuesta:

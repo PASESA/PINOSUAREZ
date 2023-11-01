@@ -6,9 +6,9 @@ from tkinter import messagebox as mb
 class Operacion:
 	def __init__(self):
 		self.host = "localhost"
-		self.user = "Admin"
-		self.password = "P4S3S4_ADMIN"
-		self.database = "db_test"
+		self.user = "Aurelio"
+		self.password = "RG980320"
+		self.database = "Parqueadero1"
 
 	def abrir(self):
 		conexion=pymysql.connect(host=self.host,
@@ -17,6 +17,8 @@ class Operacion:
 								 database=self.database)
 
 		return conexion
+
+
 	def altaRegistroRFID(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
@@ -28,10 +30,18 @@ class Operacion:
 	def guardacobro(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = "update Entradas set vobo = %s, Importe = %s, TiempoTotal = %s, Entrada = %s, Salida = %s,TarifaPreferente = %s, QRPromo = %s where id = %s;"
+		sql = "update Entradas set Motivo = %s, vobo = %s, Importe = %s, TiempoTotal = %s, Entrada = %s, Salida = %s,TarifaPreferente = %s, QRPromo = %s where id = %s;"
 		cursor.execute(sql, datos)
 		cone.commit()
 		cone.close()
+
+	def desgloce_cancelados(self, corte):
+		cone = self.abrir()
+		cursor = cone.cursor()
+		query = f"SELECT id, Motivo FROM Entradas WHERE TarifaPreferente = 'CDO' AND CorteInc = {corte}"
+		cursor.execute(query)
+		cone.close()
+		return cursor.fetchall()
 
 	def ValidaPromo(self, datos):
 		cone=self.abrir()
@@ -40,7 +50,7 @@ class Operacion:
 		#sql="select descripcion, precio from articulos where codigo=%s"
 		cursor.execute(sql, datos)
 		cone.close()
-		return cursor.fetchall() 
+		return cursor.fetchall()  
 
 	def consulta(self, datos):
 		cone=self.abrir()
@@ -210,7 +220,7 @@ class Operacion:
 	def GuarCorte(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql="insert into Cortes(Importe, FechaIni, FechaFin,Quedados,idInicial,NumBolQued) values (%s,%s,%s,%s,%s,%s)"
+		sql="insert into Cortes(Importe, FechaIni, FechaFin,Quedados,idInicial,NumBolQued, Pensionados_Quedados) values (%s,%s,%s,%s,%s,%s,%s)"
 		#sql = "update Entradas set CorteInc = 1 WHERE Importe > 0"
 		cursor.execute(sql,datos)
 		cone.commit()
@@ -252,88 +262,6 @@ class Operacion:
 		cursor.execute(sql,datos1)
 		cone.close()
 		return cursor.fetchall()
-
-
-
-
-####PENSIONADOS
-	def ValidarRFID(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="SELECT id_cliente FROM Pensionados WHERE Num_tarjeta=%s"
-		cursor.execute(sql,datos)
-		cone.close()
-		return cursor.fetchall()       
-	def AltaPensionado(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="INSERT INTO Pensionados(Num_tarjeta, Nom_cliente, Apell1_cliente, Apell2_cliente, Fecha_alta, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle_num, Placas, Modelo_auto, Color_auto, Monto, Cortesia, Tolerancia) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		#datos=(numtarjeta, Nombre, ApellidoPat, ApellidoMat, fechaAlta, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle, Placa, Modelo, Color, montoxmes, cortesia, tolerancia)
-		cursor.execute(sql, datos)
-		cone.commit()
-		cone.close()
-	def ConsultaPensionado(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="SELECT Nom_cliente, Apell1_cliente, Apell2_cliente, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle_num, Placas, Modelo_auto, Color_auto, Fecha_vigencia, Estatus, Vigencia, Monto, Cortesia, Tolerancia FROM Pensionados where id_cliente=%s"
-		cursor.execute(sql,datos)
-		cone.close()
-		return cursor.fetchall()
-	def ModificarPensionado(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="UPDATE Pensionados SET Num_tarjeta=%s, Nom_cliente=%s, Apell1_cliente=%s, Apell2_cliente=%s, Telefono1=%s, Telefono2=%s, Ciudad=%s, Colonia=%s, CP=%s, Calle_num=%s, Placas=%s, Modelo_auto=%s, Color_auto=%s, Monto=%s, Cortesia=%s, Tolerancia=%s, Ult_Cambio=%s WHERE id_cliente=%s"
-		#datos=(numtarjeta, Nombre, ApellidoPat, ApellidoMat, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle, Placa, Modelo,                    Color, montoxmes, cortesia, tolerancia, PensionadoOpen)
-		cursor.execute(sql, datos)
-		cone.commit()
-		cone.close()
-	def CobrosPensionado(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="INSERT INTO PagosPens(idcliente, num_tarjeta, Fecha_pago, Fecha_vigencia, Mensualidad, Monto, TipoPago) values (%s, %s, %s, %s, %s, %s, %s)"
-		cursor.execute(sql,datos)
-		cone.commit()
-		cone.close()
-	def UpdPensionado(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="UPDATE Pensionados SET Vigencia=%s, Fecha_vigencia=%s WHERE id_cliente=%s"
-		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
-		cursor.execute(sql, datos)
-		cone.commit()
-		cone.close()
-	def UpdMovsPens(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="UPDATE MovimientosPens SET Salida=%s, TiempoTotal =%s, Estatus=%s WHERE idcliente=%s and Salida is null"
-		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
-		cursor.execute(sql, datos)
-		cone.commit()
-		cone.close()
-	def UpdPens2(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="UPDATE Pensionados SET Estatus=%s WHERE id_cliente=%s"
-		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
-		cursor.execute(sql, datos)
-		cone.commit()
-		cone.close()
-	def ValidarTarj(self, datos):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="SELECT id_cliente, Estatus FROM Pensionados WHERE Num_tarjeta=%s"
-		cursor.execute(sql,datos)
-		cone.close()
-		return cursor.fetchall()
-	def TreaPenAdentro(self):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql="""SELECT Num_tarjeta, Nom_cliente, Apell1_cliente, Placas, Modelo_auto from Pensionados where Estatus = "Adentro";"""
-		cursor.execute(sql)
-		cone.close()
-		return cursor.fetchall()  
-
-
 
  #####USUARIOS###
 
@@ -381,6 +309,263 @@ class Operacion:
 		cone.commit()
 		cone.close()
 
+
+	def cifrar_folio(self, folio):
+		"""
+		Cifra un número de folio utilizando una tabla de sustitución numérica.
+
+		Args:
+			folio (int): Número de folio a cifrar.
+
+		Returns:
+			str: Número de folio cifrado.
+		"""
+
+		# Convierte el número de folio en una cadena de texto.
+		folio = str(folio)
+
+		# Genera un número aleatorio de 5 dígitos y lo convierte en una cadena de texto.
+		num_random = random.randint(10000, 99999)
+		numero_seguridad = str(num_random)
+
+		# Concatena el número de seguridad al número de folio.
+		folio = folio + numero_seguridad
+
+		# Tabla de sustitución numérica.
+		tabla = {'0': '5', '1': '3', '2': '9', '3': '1', '4': '7', '5': '0', '6': '8', '7': '4', '8': '6', '9': '2'}
+
+		# Convierte el número de folio cifrado a una lista de dígitos.
+		digitos = list(folio)
+
+		# Sustituye cada dígito por el número correspondiente en la tabla de sustitución.
+		cifrado = [tabla[digito] for digito in digitos]
+
+		# Convierte la lista cifrada de vuelta a una cadena de texto.
+		cifrado = ''.join(cifrado)
+
+		# Devuelve el número de folio cifrado.
+		return cifrado
+
+
+	def descifrar_folio(self, folio_cifrado):
+		"""
+		Descifra un número de folio cifrado utilizando una tabla de sustitución numérica.
+
+		Args:
+			folio_cifrado (str): Número de folio cifrado.
+
+		Returns:
+			str: Número de folio descifrado.
+		"""
+		try:
+			# Verifica si el número de folio es válido.
+			if len(folio_cifrado) <= 5:
+				raise ValueError("El folio no es válido, escanee nuevamente, si el error persiste contacte con un administrador.")
+
+			# Verifica si el número de folio tiene caracteres inválidos.
+			caracteres_invalidos = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '{', '}', '[', ']', '|', '\\', ':', ';', '<', '>', ',', '.', '/', '?']
+			if any(caracter in folio_cifrado for caracter in caracteres_invalidos):
+				raise TypeError("El folio no tiene un formato válido")
+
+			# Tabla de sustitución numérica.
+			tabla = {'0': '5', '1': '3', '2': '9', '3': '1', '4': '7', '5': '0', '6': '8', '7': '4', '8': '6', '9': '2'}
+
+			# Convierte el número de folio cifrado a una lista de dígitos.
+			digitos_cifrados = list(folio_cifrado)
+
+			# Crea una tabla de sustitución inversa invirtiendo la tabla original.
+			tabla_inversa = {valor: clave for clave, valor in tabla.items()}
+
+			# Sustituye cada dígito cifrado por el número correspondiente en la tabla de sustitución inversa.
+			descifrado = [tabla_inversa[digito] for digito in digitos_cifrados]
+
+			# Convierte la lista descifrada de vuelta a una cadena de texto.
+			descifrado = ''.join(descifrado)
+
+			# Elimina los últimos 4 dígitos, que corresponden al número aleatorio generado en la función cifrar_folio.
+			descifrado = descifrado[:-5]
+
+			# Retorna el folio descifrado.
+			return descifrado
+
+		# Maneja el error si el formato del número de folio es incorrecto.
+		except TypeError as error:
+			print(error)
+			mb.showerror("Error", f"El folio tiene un formato incorrecto, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
+			return None
+
+		# Maneja cualquier otro error que pueda ocurrir al descifrar el número de folio.
+		except Exception as error:
+			print(error)
+			mb.showerror("Error", f"Ha ocurrido un error al descifrar el folio, intente nuevamente, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
+			return None
+
+
+	def generar_QR(self, QR_info: str, path: str = "reducida.png") -> None:
+		"""Genera un código QR a partir de la información dada y lo guarda en un archivo de imagen.
+
+		Args:
+			QR_info (str): La información para generar el código QR.
+			path (str, optional): La ruta y el nombre del archivo de imagen donde se guardará el código QR, por defecto es "reducida.png".
+		"""
+		# Generar el código QR
+		img = qrcode.make(QR_info)
+
+		# Redimensionar el código QR a un tamaño específico
+		img = img.get_image().resize((320, 320))
+
+		# Guardar la imagen redimensionada en un archivo
+		img.save(path)
+
+
+	def Boletos_perdidos_generados(self):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS GENERADOS" FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
+		cursor.execute(sql)        
+		cone.commit()
+
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+	def Boletos_perdidos_generados_desglose(self):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT id, Entrada, Salida, Placas FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
+		cursor.execute(sql)        
+		cone.commit()
+
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+
+
+	def Boletos_perdidos_cobrados(self, Numcorte):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS COBRADOS" FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
+		cursor.execute(sql, Numcorte)        
+		cone.commit()
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+	def Boletos_perdidos_cobrados_desglose(self, Numcorte):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT id, Entrada, Salida, Placas FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
+		cursor.execute(sql, Numcorte)        
+		cone.commit()
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+
+
+	def Boletos_perdidos_no_cobrados(self):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS NO COBRADOS" FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0 AND TarifaPreferente IS NULL;"""
+		cursor.execute(sql)        
+		cone.commit()
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+
+
+####PENSIONADOS
+	def ValidarRFID(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="SELECT id_cliente FROM Pensionados WHERE Num_tarjeta=%s"
+		cursor.execute(sql,datos)
+		cone.close()
+		return cursor.fetchall()       
+	def AltaPensionado(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="INSERT INTO Pensionados(Num_tarjeta, Nom_cliente, Apell1_cliente, Apell2_cliente, Fecha_alta, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle_num, Placas, Modelo_auto, Color_auto, Monto, Cortesia, Tolerancia) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		#datos=(numtarjeta, Nombre, ApellidoPat, ApellidoMat, fechaAlta, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle, Placa, Modelo, Color, montoxmes, cortesia, tolerancia)
+		cursor.execute(sql, datos)
+		cone.commit()
+		cone.close()
+	def ConsultaPensionado(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="SELECT Nom_cliente, Apell1_cliente, Apell2_cliente, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle_num, Placas, Modelo_auto, Color_auto, Fecha_vigencia, Estatus, Vigencia, Monto, Cortesia, Tolerancia FROM Pensionados where id_cliente=%s"
+		cursor.execute(sql,datos)
+		cone.close()
+		return cursor.fetchall()
+	def ModificarPensionado(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="UPDATE Pensionados SET Num_tarjeta=%s, Nom_cliente=%s, Apell1_cliente=%s, Apell2_cliente=%s, Telefono1=%s, Telefono2=%s, Ciudad=%s, Colonia=%s, CP=%s, Calle_num=%s, Placas=%s, Modelo_auto=%s, Color_auto=%s, Monto=%s, Cortesia=%s, Tolerancia=%s, Ult_Cambio=%s WHERE id_cliente=%s"
+		#datos=(numtarjeta, Nombre, ApellidoPat, ApellidoMat, Telefono1, Telefono2, Ciudad, Colonia, CP, Calle, Placa, Modelo,                    Color, montoxmes, cortesia, tolerancia, PensionadoOpen)
+		cursor.execute(sql, datos)
+		cone.commit()
+		cone.close()
+	def CobrosPensionado(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="INSERT INTO PagosPens(idcliente, num_tarjeta, Fecha_pago, Fecha_vigencia, Mensualidad, Monto, TipoPago) values (%s, %s, %s, %s, %s, %s, %s)"
+		cursor.execute(sql,datos)
+		cone.commit()
+		cone.close()
+
+
+	def UpdMovsPens(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="UPDATE MovimientosPens SET Salida=%s, TiempoTotal =%s, Estatus=%s WHERE idcliente=%s and Salida is null"
+		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
+		cursor.execute(sql, datos)
+		cone.commit()
+		cone.close()
+	def UpdPens2(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="UPDATE Pensionados SET Estatus=%s WHERE id_cliente=%s"
+		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
+		cursor.execute(sql, datos)
+		cone.commit()
+		cone.close()
+	def ValidarTarj(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="SELECT id_cliente, Estatus FROM Pensionados WHERE Num_tarjeta=%s"
+		cursor.execute(sql,datos)
+		cone.close()
+		return cursor.fetchall()
+	def TreaPenAdentro(self):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="""SELECT Num_tarjeta, Nom_cliente, Apell1_cliente, Placas, Modelo_auto from Pensionados where Estatus = "Adentro";"""
+		cursor.execute(sql)
+		cone.close()
+		return cursor.fetchall()  
 
 	def nombre_usuario_activo(self):
 		"""
@@ -445,187 +630,39 @@ class Operacion:
 		# Se devuelve la lista de tuplas con los resultados de la consulta.
 		return resultados
 
-	def cifrar_folio(self, folio):
-		"""
-		Cifra un número de folio utilizando una tabla de sustitución numérica.
-
-		Args:
-			folio (int): Número de folio a cifrar.
-
-		Returns:
-			str: Número de folio cifrado.
-		"""
-
-		# Convierte el número de folio en una cadena de texto.
-		folio = str(folio)
-
-		# Genera un número aleatorio de 5 dígitos y lo convierte en una cadena de texto.
-		num_random = random.randint(10000, 99999)
-		numero_seguridad = str(num_random)
-
-		# Concatena el número de seguridad al número de folio.
-		folio = folio + numero_seguridad
-
-
-		# Tabla de sustitución numérica.
-		tabla = {'0': '5', '1': '3', '2': '9', '3': '1', '4': '7', '5': '0', '6': '8', '7': '4', '8': '6', '9': '2'}
-
-		# Convierte el número de folio cifrado a una lista de dígitos.
-		digitos = list(folio)
-
-		# Sustituye cada dígito por el número correspondiente en la tabla de sustitución.
-		cifrado = [tabla[digito] for digito in digitos]
-
-		# Convierte la lista cifrada de vuelta a una cadena de texto.
-		cifrado = ''.join(cifrado)
-
-		# Devuelve el número de folio cifrado.
-		return cifrado
-
-	def descifrar_folio(self, folio_cifrado):
-		"""
-		Descifra un número de folio cifrado utilizando una tabla de sustitución numérica.
-
-		Args:
-			folio_cifrado (str): Número de folio cifrado.
-
-		Returns:
-			str: Número de folio descifrado.
-		"""
-		try:
-			# Verifica si el número de folio es válido.
-			if len(folio_cifrado) <= 5:
-				raise ValueError("El folio no es válido, escanee nuevamente, si el error persiste contacte con un administrador.")
-
-			# Verifica si el número de folio tiene caracteres inválidos.
-			caracteres_invalidos = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '{', '}', '[', ']', '|', '\\', ':', ';', '<', '>', ',', '.', '/', '?']
-			if any(caracter in folio_cifrado for caracter in caracteres_invalidos):
-				raise TypeError("El folio no tiene un formato válido")
-
-			# Tabla de sustitución numérica.
-			tabla = {'0': '5', '1': '3', '2': '9', '3': '1', '4': '7', '5': '0', '6': '8', '7': '4', '8': '6', '9': '2'}
-
-			# Convierte el número de folio cifrado a una lista de dígitos.
-			digitos_cifrados = list(folio_cifrado)
-
-			# Crea una tabla de sustitución inversa invirtiendo la tabla original.
-			tabla_inversa = {valor: clave for clave, valor in tabla.items()}
-
-			# Sustituye cada dígito cifrado por el número correspondiente en la tabla de sustitución inversa.
-			descifrado = [tabla_inversa[digito] for digito in digitos_cifrados]
-
-			# Convierte la lista descifrada de vuelta a una cadena de texto.
-			descifrado = ''.join(descifrado)
-
-			# Elimina los últimos 4 dígitos, que corresponden al número aleatorio generado en la función cifrar_folio.
-			descifrado = descifrado[:-5]
-
-			# Retorna el folio descifrado.
-			return descifrado
-
-		# Maneja el error si el formato del número de folio es incorrecto.
-		except TypeError as error:
-			mb.showerror("Error", f"El folio tiene un formato incorrecto, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
-			return None
-
-		# Maneja cualquier otro error que pueda ocurrir al descifrar el número de folio.
-		except Exception as error:
-			mb.showerror("Error", f"Ha ocurrido un error al descifrar el folio, intente nuevamente, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
-			return None
-
-	def generar_QR(self, QR_info: str, path: str = "reducida.png") -> None:
-		"""Genera un código QR a partir de la información dada y lo guarda en un archivo de imagen.
-
-		Args:
-			QR_info (str): La información para generar el código QR.
-			path (str, optional): La ruta y el nombre del archivo de imagen donde se guardará el código QR, por defecto es "reducida.png".
-		"""
-		# Generar el código QR
-		img = qrcode.make(QR_info)
-
-		# Redimensionar el código QR a un tamaño específico
-		img = img.get_image().resize((320, 320))
-
-		# Guardar la imagen redimensionada en un archivo
-		img.save(path)
-
-
-	def Boletos_perdidos_generados(self):
+	####pensionados
+	def ValidarPen(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS GENERADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
-		cursor.execute(sql)        
-		cone.commit()
-
-		resultados = cursor.fetchall()
-
-		# Se cierra la conexión con la base de datos.
+		sql="SELECT id_cliente FROM Pensionados WHERE Num_tarjeta=%s"
+		cursor.execute(sql,datos)
 		cone.close()
+		return cursor.fetchall()       
 
-		# Se devuelve la lista de tuplas con los resultados de la consulta.
-		return resultados
-
-	def Boletos_perdidos_generados_desglose(self):
+	def UpdPensionado(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT id, Entrada, Salida, Placas FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
-		cursor.execute(sql)        
+		sql="UPDATE Pensionados SET Estatus=%s WHERE id_cliente=%s"
+		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
+		cursor.execute(sql, datos)
 		cone.commit()
-
-		resultados = cursor.fetchall()
-
-		# Se cierra la conexión con la base de datos.
 		cone.close()
-
-		# Se devuelve la lista de tuplas con los resultados de la consulta.
-		return resultados
-
-
-
-	def Boletos_perdidos_cobrados(self, Numcorte):
+	def Upd_Pensionado(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS COBRADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
-		cursor.execute(sql, Numcorte)        
+		sql="UPDATE Pensionados SET Vigencia=%s, Fecha_vigencia=%s WHERE id_cliente=%s"
+		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
+		cursor.execute(sql, datos)
 		cone.commit()
-		resultados = cursor.fetchall()
-
-		# Se cierra la conexión con la base de datos.
 		cone.close()
-
-		# Se devuelve la lista de tuplas con los resultados de la consulta.
-		return resultados
-
-
-	def Boletos_perdidos_cobrados_desglose(self, Numcorte):
+	def MovsPensionado(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT id, Entrada, Salida, Placas FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
-		cursor.execute(sql, Numcorte)        
+		sql="INSERT INTO MovimientosPens(idcliente, num_tarjeta, Entrada, Estatus, Corte) values (%s,%s,%s,%s,%s)"
+		cursor.execute(sql,datos)
 		cone.commit()
-		resultados = cursor.fetchall()
-
-		# Se cierra la conexión con la base de datos.
 		cone.close()
 
-		# Se devuelve la lista de tuplas con los resultados de la consulta.
-		return resultados
-
-
-
-	def Boletos_perdidos_no_cobrados(self):
-		cone=self.abrir()
-		cursor=cone.cursor()
-		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS NO COBRADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0 AND TarifaPreferente IS NULL;"""
-		cursor.execute(sql)        
-		cone.commit()
-		resultados = cursor.fetchall()
-
-		# Se cierra la conexión con la base de datos.
-		cone.close()
-
-		# Se devuelve la lista de tuplas con los resultados de la consulta.
-		return resultados
 
 	def consultar_UpdMovsPens(self, datos):
 		cone=self.abrir()
@@ -640,7 +677,7 @@ class Operacion:
 	def ConsultaPensionado_entrar(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql="SELECT Fecha_vigencia, Estatus, Vigencia, Tolerancia FROM Pensionados where id_cliente=%s"
+		sql="SELECT Fecha_vigencia, Estatus, Vigencia, Tolerancia, Placas, Nom_cliente, Apell1_cliente, Apell2_cliente FROM Pensionados where id_cliente=%s"
 		cursor.execute(sql,datos)
 		cone.close()
 		return cursor.fetchall()
