@@ -61,7 +61,7 @@ class BlinkingLabel:
             self.label.after_cancel(self._blink_id)
             self._original_bg = None
             self._blink_id = None
-            print("se de tiene parpadeo")
+            print("se detiene parpadeo")
 
 class RelojAnalogico:
     # Clase para la interfaz de reloj analógico

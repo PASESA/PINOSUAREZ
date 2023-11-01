@@ -22,13 +22,15 @@ from view_modificar_pensionado import View_modificar_pensionados
 import traceback
 import math
 
-import atexit
+from atexit import register
 from reloj import RelojAnalogico
 from time import sleep
+from controller_email import main
 ###--###
 data_rinter = (0x04b8, 0x0202, 0)
 
 penalizacion_con_importe = True
+
 contraseña_pensionados = "P4s3"
 
 valor_tarjeta = 116
@@ -40,6 +42,7 @@ AutoA = "AutoA.png"
 
 qr_imagen = "reducida.png"
 PROMOCIONES = ('PROM 100', 'PROM 2')
+nombre_estacionamiento = 'Pino Suarez 27'
 
 font_promo = ('Arial', 9, "bold")
 estilo = ('Arial', 12)
@@ -49,11 +52,8 @@ font_mensaje = ('Arial', 40)
 font_reloj = ('Arial', 65)
 font_cancel = ('Arial', 15)
 
-button_color = "#062546"
+button_color = "#062546"#"#39acec""#6264d4"
 button_letters_color = "white" 
-
-nombre_estacionamiento = 'Pino Suarez 27'
-
 
 from controller_email import main
 
@@ -63,7 +63,7 @@ send_data = True
 class FormularioOperacion:
     def __init__(self):
         if send_data:
-            atexit.register(main)
+            register(main)
 
         self.controlador_crud_pensionados = Pensionados()
         self.folio_auxiliar = None
@@ -77,7 +77,7 @@ class FormularioOperacion:
         screen_height = self.root.winfo_screenheight()
 
         # Configura la ventana para que ocupe toda la pantalla
-        self.root.geometry(f"{screen_width}x{screen_height}")
+        self.root.geometry(f"{screen_width}x{screen_height}+0+0")
 
         # Colocar el LabelFrame en las coordenadas calculadas
         principal = tk.LabelFrame(self.root)
@@ -94,10 +94,9 @@ class FormularioOperacion:
         self.listado_completo()
         self.interface_pensionados()
         self.cuaderno1.grid(column=0, row=0, padx=2, pady=5)
-
         if show_clock:
             self.reloj = RelojAnalogico()
-            self.ventana1.geometry(f"{screen_width}x{screen_height}+200+0")
+
         self.root.mainloop()
         ###########################Inicia Pagina1##########################
 
@@ -491,11 +490,9 @@ class FormularioOperacion:
             # Calcular la permanencia
             self.CalculaPermanencia()
 
-
             if penalizacion_con_importe:
 
                 # Calcular el importe basado en las horas y días de permanencia
-
                 if self.horas_dentro < 1:
                     importe = 238
 
@@ -569,7 +566,7 @@ class FormularioOperacion:
         printer.text("BOLETO DE ENTRADA\n")
         printer.text('Entro: '+horaentrada[:-3]+'\n')
         printer.text('Placas '+placa+'\n')
-        printer.text(f'000{folio_boleto}\n')
+        printer.text(f'Folio 000{folio_boleto}\n')
         printer.set(align = "center")
         printer.text("B O L E T O  P E R D I D O\n")
         printer.text("--------------------------------------\n")
@@ -747,7 +744,14 @@ class FormularioOperacion:
         self.entrypromo.focus()
 
         if show_clock:
-            self.reloj.set_time(entrada=str(Entrada), salida=str(Salida), hour= self.horas_dentro, minute= self.minutos_dentro, importe=importe)
+            self.reloj.set_time(
+                entrada=str(Entrada),
+                salida=str(Salida),
+                days = self.dias_dentro,
+                hour= self.horas_dentro,
+                minute= self.minutos_dentro,
+                seconds= segundos_vividos,
+                importe=importe)
 
             # Espera un segundo para que de tiempo a cargar la animacion
             sleep(0.5)
@@ -952,7 +956,6 @@ class FormularioOperacion:
         elif TipoPromo == "PROM 2":
             #LOGICA DE LA PROMOCIÓN 
             text_promo = "PROM1"
-
 
         # Añade "Danado" a la descripcion de la promocion si el boleto está marcado como "Danado"
         if TarifaPreferente == "Danado":
@@ -2032,7 +2035,7 @@ class FormularioOperacion:
         Estatus = cliente[14]
         monto = cliente[15]
         cortesia = cliente[16]
-        tolerancia = int(cliente[17])
+        Tolerancia = int(cliente[17])
 
         self.Monto.set(monto)
         self.Vigencia.set(VigAct)
@@ -2146,6 +2149,7 @@ class FormularioOperacion:
 
             Existe = self.DB.ValidarRFID(tarjeta)[0][0]
 
+
             if not Existe:
                 mb.showwarning("IMPORTANTE", "No existe Cliente para ese Num de Tarjeta")
                 self.caja_texto_numero_tarjeta.focus()
@@ -2204,7 +2208,7 @@ class FormularioOperacion:
                 hoy = datetime.strptime(hoy, "%Y-%m-%d %H:%M:%S")
 
                 limite = self.get_date_limit(VigAct, Tolerancia)
-                print(limite)
+                print(f"limite: {limite}")
 
                 penalizacion_pension = 0
 
@@ -3009,7 +3013,7 @@ class FormularioOperacion:
 
     def get_date_limit(self, date_start:datetime, Tolerance:int) -> datetime:
         """
-        Calcula la fecha límite a partir de una fecha de inicio y una cantidad de días de tolerancia.
+        Calcula la fecha límite a partir de una fecha de inicio y una cantidad de días de Tolerancia.
 
         :param date_start (datetime): Fecha de inicio.
         :param Tolerance (int): Cantidad de días laborables a agregar.
@@ -3048,7 +3052,6 @@ class FormularioOperacion:
         elif current_tab_index == 3:
             # Hacer focus en el widget deseado
             self.caja_texto_numero_tarjeta.focus_set()
-
 
 # aplicacion1=FormularioOperacion()
 
