@@ -2032,7 +2032,7 @@ class FormularioOperacion:
         position_id = len(f"Pension-{nombre_estacionamiento}-")
 
         # Convierte el número de tarjeta en un entero
-        numtarjeta = int(numtarjeta[position_id:])
+        numtarjeta = numtarjeta[position_id:]
 
         resultado = self.DB.ValidarRFID(numtarjeta)
 
@@ -2644,7 +2644,7 @@ class FormularioOperacion:
         position_id = len(f"Pension-{nombre_estacionamiento}-")
 
         # Convierte el número de tarjeta en un entero
-        tarjeta = int(numero_tarjeta[position_id:])
+        tarjeta = numero_tarjeta[position_id:]
 
         if len(contraseña) == 0:
             mb.showwarning("Error", "Ingrese la contraseña para agregar un pensionado")
@@ -2665,6 +2665,7 @@ class FormularioOperacion:
         if len(resultado) == 0:
             mb.showerror("Error", "No está registrado un pensionado con dicho número de tarjeta")
             self.variable_numero_tarjeta.set("")
+            self.caja_texto_numero_tarjeta.focus()
             self.limpiar_datos_pago()
             self.activar_botones()
             return
