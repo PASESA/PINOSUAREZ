@@ -562,7 +562,7 @@ class FormularioOperacion:
         if Boleto_perdido == False:
             return
 
-        MaxFolio=str(self.DB.MaxfolioEntrada())
+        MaxFolio=self.DB.MaxfolioEntrada()
         MaxFolio = MaxFolio[0][0]
         folio_boleto = MaxFolio + 1
         self.MaxId.set(folio_boleto)
@@ -975,6 +975,7 @@ class FormularioOperacion:
         elif TipoPromo == "PROM 2":
             #LOGICA DE LA PROMOCIÓN 
             text_promo = "PROM1"
+            importe = 0
 
         # Añade "Danado" a la descripcion de la promocion si el boleto está marcado como "Danado"
         if TarifaPreferente == "Danado":
