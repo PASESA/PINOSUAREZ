@@ -3366,13 +3366,13 @@ class FormularioOperacion:
         Salida = datetime.strptime(self.copia_fecha_salida.get(), '%Y-%m-%d %H:%M:%S')
 
         hora_min = datetime.strptime('2024-01-26 20:00:00', '%Y-%m-%d %H:%M:%S')
-        hora_max = datetime.strptime('2024-01-27 00:59:59', '%Y-%m-%d %H:%M:%S')
+        hora_max = datetime.strptime('2024-01-27 01:59:59', '%Y-%m-%d %H:%M:%S')
 
         importe = self.importe.get()
 
         if hora_min <= Salida and Salida <= hora_max:
             print("dentro del rango")
-            importe = 140
+            importe = 162.40
 
         else:
             mb.showerror("Error", "No se puede aplicar la promoción, esta fuera del rango de tiempo")
