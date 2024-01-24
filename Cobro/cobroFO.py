@@ -3366,7 +3366,7 @@ class FormularioOperacion:
         Salida = datetime.strptime(self.copia_fecha_salida.get(), '%Y-%m-%d %H:%M:%S')
 
         hora_min = datetime.strptime('2024-01-26 20:00:00', '%Y-%m-%d %H:%M:%S')
-        hora_max = datetime.strptime('2024-01-26 23:59:59', '%Y-%m-%d %H:%M:%S')
+        hora_max = datetime.strptime('2024-01-27 00:59:59', '%Y-%m-%d %H:%M:%S')
 
         importe = self.importe.get()
 
