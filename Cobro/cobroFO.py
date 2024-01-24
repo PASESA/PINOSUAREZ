@@ -263,23 +263,23 @@ class FormularioOperacion:
         self.cuaderno1.add(self.pagina2, text=" Modulo de Cobro")
         #en el frame
         self.FOLIO_QR=tk.LabelFrame(self.pagina2, text="FOLIO_QR")
-        self.FOLIO_QR.grid(column=0, row=0, padx=2, pady=10, sticky=tk.NW)
+        self.FOLIO_QR.grid(column=0, row=0, padx=2, pady=2, sticky=tk.NW)
 
         self.labelframe2=tk.LabelFrame(self.FOLIO_QR, text="Autos")
-        self.labelframe2.grid(column=0, row=0, padx=2, pady=10, sticky=tk.NW)
+        self.labelframe2.grid(column=0, row=0, padx=2, pady=2, sticky=tk.NW)
         self.label1=tk.Label(self.labelframe2, text="Lector QR")
-        self.label1.grid(column=0, row=0, padx=4, pady=4)
+        self.label1.grid(column=0, row=0, padx=2, pady=2)
         self.label3=tk.Label(self.labelframe2, text="Entro:")
-        self.label3.grid(column=0, row=1, padx=4, pady=4)
+        self.label3.grid(column=0, row=1, padx=2, pady=2)
         self.label4=tk.Label(self.labelframe2, text="Salio:")
-        self.label4.grid(column=0, row=2, padx=4, pady=4)
+        self.label4.grid(column=0, row=2, padx=2, pady=2)
 
         # Crear el LabelFrame "promociones"
         self.frame_promociones = tk.LabelFrame(self.FOLIO_QR, text="Promociones")
-        self.frame_promociones.grid(column=0, row=1, padx=5, pady=10, sticky=tk.NSEW)
+        self.frame_promociones.grid(column=0, row=1, padx=2, pady=2, sticky=tk.NSEW)
 
         self.frame_promociones_botones = Frame(self.frame_promociones)
-        self.frame_promociones_botones.grid(column=0, row=0, padx=5, pady=10, sticky=tk.NSEW)
+        self.frame_promociones_botones.grid(column=0, row=0, padx=2, pady=2, sticky=tk.NSEW)
 
         # Botón "Promo Taqueria"
         self.button_promo_taqueria = tk.Button(
@@ -292,7 +292,7 @@ class FormularioOperacion:
             bg="#FF8000",
             font=font_promo
         )
-        self.button_promo_taqueria.grid(column=0, row=0, padx=5, pady=5)
+        self.button_promo_taqueria.grid(column=0, row=0, padx=2, pady=2)
 
         # Botón "Promo Cheleria"
         self.button_promo_cheleria = tk.Button(
@@ -305,23 +305,36 @@ class FormularioOperacion:
             bg="#3399FF",
             font=font_promo
         )
-        self.button_promo_cheleria.grid(column=1, row=0, padx=5, pady=5)
+        self.button_promo_cheleria.grid(column=1, row=0, padx=2, pady=2)
+
+        # Botón "Promo Cheleria"
+        self.button_promo_hospital = tk.Button(
+            self.frame_promociones,
+            text="Promo Hospital",
+            command=self.promo_hospital,
+            # width=10,
+            height=2,
+            anchor="center",
+            bg="gray",
+            font=('Arial', 10, "bold")
+        )
+        self.button_promo_hospital.grid(column=0, row=1, padx=2, pady=2)
 
         self.frame_promociones_campos = Frame(self.frame_promociones)
-        self.frame_promociones_campos.grid(column=0, row=1, padx=5, pady=5, sticky=tk.NSEW)
+        self.frame_promociones_campos.grid(column=0, row=2, padx=2, pady=2, sticky=tk.NSEW)
 
         self.labelpromo=ttk.LabelFrame(self.frame_promociones_campos, text="Leer el QR de Promocion")
-        self.labelpromo.grid(column=0, row=1, padx=2, pady=10, sticky=tk.NW)
+        self.labelpromo.grid(column=0, row=1, padx=2, pady=2, sticky=tk.NW)
         self.promolbl1=tk.Label(self.labelpromo, text="Codigo QR")
-        self.promolbl1.grid(column=0, row=0, padx=4, pady=4)
+        self.promolbl1.grid(column=0, row=0, padx=2, pady=2)
         self.promolbl2=tk.Label(self.labelpromo, text="Tipo Prom")
-        self.promolbl2.grid(column=0, row=1, padx=4, pady=4)
+        self.promolbl2.grid(column=0, row=1, padx=2, pady=2)
 
         #creamos un objeto para obtener la lectura de la PROMOCION
         self.promo=tk.StringVar()
         self.entrypromo=tk.Entry(self.labelpromo, textvariable=self.promo, justify='center')
         self.entrypromo.bind('<Return>',self.CalculaPromocion)#con esto se lee automatico
-        self.entrypromo.grid(column=1, row=0, padx=4, pady=4)           
+        self.entrypromo.grid(column=1, row=0, padx=2, pady=2)           
         #este es donde pongo el tipo de PROMOCION
         self.PrTi=tk.StringVar()
         self.entryPrTi=tk.Entry(self.labelpromo, width=20, textvariable=self.PrTi, state= "readonly", justify='center')
@@ -330,13 +343,13 @@ class FormularioOperacion:
 
 
         self.labelcuantopagas=tk.LabelFrame(self.FOLIO_QR, text='cual es el pago')
-        self.labelcuantopagas.grid(column=0,row=2, padx=2, pady=10, sticky=tk.NW)
+        self.labelcuantopagas.grid(column=0,row=2, padx=2, pady=2, sticky=tk.NW)
         self.cuantopagas=tk.Label(self.labelcuantopagas, text="la cantidad entregada")
-        self.cuantopagas.grid(column=0, row=0, padx=4, pady=4)
+        self.cuantopagas.grid(column=0, row=0, padx=2, pady=2)
         self.importees=tk.Label(self.labelcuantopagas, text="el importe es")
-        self.importees.grid(column=0, row=1, padx=4, pady=4)
+        self.importees.grid(column=0, row=1, padx=2, pady=2)
         self.cambio=tk.Label(self.labelcuantopagas, text="el cambio es")
-        self.cambio.grid(column=0, row=2, padx=4, pady=4)
+        self.cambio.grid(column=0, row=2, padx=2, pady=2)
         self.cuantopagasen=tk.StringVar()
         self.cuantopagasen.set(100)
         self.entrycuantopagasen=tk.Entry(self.labelcuantopagas, width=15, textvariable=self.cuantopagasen, justify='center')
@@ -352,16 +365,16 @@ class FormularioOperacion:
 
         #en otro frame
         self.labelframe3_principal=tk.LabelFrame(self.pagina2, text="Datos del COBRO")
-        self.labelframe3_principal.grid(column=1, row=0, pady=10, sticky=tk.NW)
+        self.labelframe3_principal.grid(column=1, row=0, pady=2, sticky=tk.NW)
 
         self.labelframe3=tk.LabelFrame(self.labelframe3_principal, text="Tiempo y Salida")
-        self.labelframe3.grid(column=0, row=0, padx=2, pady=10, sticky=tk.NW)
+        self.labelframe3.grid(column=0, row=0, padx=2, pady=2, sticky=tk.NW)
         self.lbl1=tk.Label(self.labelframe3, text="Hr Salida")
-        self.lbl1.grid(column=0, row=1, padx=4, pady=4)
+        self.lbl1.grid(column=0, row=1, padx=2, pady=2)
         self.lbl2=tk.Label(self.labelframe3, text="TiempoTotal")
-        self.lbl2.grid(column=0, row=2, padx=4, pady=4)
+        self.lbl2.grid(column=0, row=2, padx=2, pady=2)
         self.lbl3=tk.Label(self.labelframe3, text="Importe")
-        self.lbl3.grid(column=0, row=3, padx=4, pady=4)
+        self.lbl3.grid(column=0, row=3, padx=2, pady=2)
 
 
         self.IImporte = tk.Label(self.labelframe3, text="") #Creacion del Label
@@ -394,14 +407,14 @@ class FormularioOperacion:
         self.label15.grid(column=0, row=2, padx=0, pady=0)
 
         self.labelPerdido_principal=tk.LabelFrame(self.pagina2, text="")
-        self.labelPerdido_principal.grid(column=2,row=0, pady=10, sticky=tk.NW)
+        self.labelPerdido_principal.grid(column=2,row=0, pady=2, sticky=tk.NW)
 
         self.labelPerdido=tk.LabelFrame(self.labelPerdido_principal, text="Boleto Perdido/Dañado")
-        self.labelPerdido.grid(column=0,row=0,padx=2, pady=10, sticky=tk.NW)
+        self.labelPerdido.grid(column=0,row=0,padx=2, pady=2, sticky=tk.NW)
 
 
         self.label_frame_folio=tk.LabelFrame(self.labelPerdido, text="FOLIO")
-        self.label_frame_folio.grid(column=0,row=0,padx=2, pady=10, sticky=tk.NW)
+        self.label_frame_folio.grid(column=0,row=0,padx=2, pady=2, sticky=tk.NW)
 
 
         self.lblFOLIO=tk.Label(self.label_frame_folio, text="INGRESE FOLIO", font=("Arial", 11))
@@ -413,7 +426,7 @@ class FormularioOperacion:
 
 
         self.label_botones_boletos_perdido=tk.LabelFrame(self.labelPerdido, text="BOLETO DAÑADO/PERDIDO")
-        self.label_botones_boletos_perdido.grid(column=0,row=1,padx=2, pady=10, sticky=tk.NW)
+        self.label_botones_boletos_perdido.grid(column=0,row=1,padx=2, pady=2, sticky=tk.NW)
 
         self.boton_boleto_dañado=tk.Button(self.label_botones_boletos_perdido, text="Boleto\nDañado", background=button_color, fg=button_letters_color, command=self.BoletoDañado, width=10, height=3, anchor="center", font=("Arial", 10))
         self.boton_boleto_dañado.grid(column=0, row=1, sticky=tk.NE, padx=10, pady=5)
@@ -426,13 +439,13 @@ class FormularioOperacion:
 
 
         self.labelPerdido2=tk.LabelFrame(self.labelPerdido_principal, text="Boletos sin cobro")
-        self.labelPerdido2.grid(column=0,row=1,padx=2, pady=10, sticky=tk.NW)
+        self.labelPerdido2.grid(column=0,row=1,padx=2, pady=2, sticky=tk.NW)
 
         self.boton2=tk.Button(self.labelPerdido2, text="B./SIN cobro", command=self.BoletoDentro, width=10, height=2, anchor="center", background=button_color, fg=button_letters_color)
         self.boton2.grid(column=0, row=0)
 
         self.scrolledtxt=st.ScrolledText(self.labelPerdido2, width=28, height=7)
-        self.scrolledtxt.grid(column=1,row=0, padx=10, pady=10)
+        self.scrolledtxt.grid(column=1,row=0, padx=10, pady=2)
 
 
 
@@ -441,23 +454,23 @@ class FormularioOperacion:
         self.folio=tk.StringVar()
         self.entryfolio=tk.Entry(self.labelframe2, textvariable=self.folio, justify='center')
         self.entryfolio.bind('<Return>',self.consultar)#con esto se lee automatico y se va a consultar
-        self.entryfolio.grid(column=1, row=0, padx=4, pady=4)
+        self.entryfolio.grid(column=1, row=0, padx=2, pady=2)
         #se crea objeto para mostrar el dato de la  Entrada solo lectura
         self.fecha_entrada=tk.StringVar()
         self.entry_fecha_entrada=ttk.Entry(self.labelframe2, textvariable=self.fecha_entrada, state="readonly",  width=15)
-        self.entry_fecha_entrada.grid(column=1, row=1, padx=4, pady=4, sticky=tk.NW)
+        self.entry_fecha_entrada.grid(column=1, row=1, padx=2, pady=2, sticky=tk.NW)
 
         #se crea objeto para mostrar el dato la Salida solo lectura
         self.fecha_salida=tk.StringVar()
         self.entry_fecha_salida=ttk.Entry(self.labelframe2, textvariable=self.fecha_salida, state="readonly",  width=15)
-        self.entry_fecha_salida.grid(column=1, row=2, padx=4, pady=4, sticky=tk.NW)
+        self.entry_fecha_salida.grid(column=1, row=2, padx=2, pady=2, sticky=tk.NW)
 
         #creamos un objeto para obtener la lectura de la PROMOCION
         self.promo=tk.StringVar()
         self.promo_auxiliar=tk.StringVar()
         self.entrypromo=tk.Entry(self.labelpromo, textvariable=self.promo, justify='center')
         self.entrypromo.bind('<Return>',self.CalculaPromocion)#con esto se lee automatico
-        self.entrypromo.grid(column=1, row=0, padx=4, pady=4)           
+        self.entrypromo.grid(column=1, row=0, padx=2, pady=2)           
         #este es donde pongo el tipo de PROMOCION
         self.TarifaPreferente=tk.StringVar()
         self.entryTarifaPreferente=tk.Entry(self.labelpromo, width=20, textvariable=self.TarifaPreferente, state= "readonly", justify='center')
@@ -2268,7 +2281,7 @@ class FormularioOperacion:
         boton5.grid(column=0, row=1, padx=4, pady=4)
 
         self.scroll_pensionados_dentro = st.ScrolledText(labelframe_pensionados_dentro, width=28, height=10)
-        self.scroll_pensionados_dentro.grid(column=0,row=2, padx=10, pady=10)
+        self.scroll_pensionados_dentro.grid(column=0,row=2, padx=10, pady=2)
 
 
 
@@ -3185,11 +3198,11 @@ class FormularioOperacion:
 
         # Crear un Frame para contener la tabla y la etiqueta
         frame_tabla = tk.Frame(ventana)
-        frame_tabla.pack(padx=10, pady=10)
+        frame_tabla.pack(padx=10, pady=2)
 
         # Agregar etiqueta "Lista de tarjetas vencidas"
         etiqueta_titulo = tk.Label(frame_tabla, text="Lista de tarjetas vencidas", font=("Arial", 14))
-        etiqueta_titulo.pack(side=tk.TOP, pady=10)
+        etiqueta_titulo.pack(side=tk.TOP, pady=2)
 
         # Crear el scroll de lado izquierdo
         scroll_y = tk.Scrollbar(frame_tabla, orient=tk.VERTICAL)
@@ -3218,7 +3231,7 @@ class FormularioOperacion:
         # Empacar el scrollbar vertical en el marco
         scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
 
-        tabla.pack(padx=10, pady=10)
+        tabla.pack(padx=10, pady=2)
 
         def cerrar_ventana():
             # Obtener la fecha y hora actual en formato deseado
@@ -3230,7 +3243,7 @@ class FormularioOperacion:
 
         # Agregar boton "Aceptar" en color rojo centrado debajo de la tabla
         btn_aceptar = tk.Button(ventana, text="Aceptar", bg="red", command=cerrar_ventana, font=("Arial", 14))
-        btn_aceptar.pack(side=tk.BOTTOM, pady=10)
+        btn_aceptar.pack(side=tk.BOTTOM, pady=2)
 
         # Obtener las dimensiones de la ventana principal
         self.root.update_idletasks()
@@ -3320,6 +3333,60 @@ class FormularioOperacion:
     def promo_cheleria(self):
         self.aplicar_promo_60_x_2("Cheleria")
 
+    def promo_hospital(self):
+        if self.folio.get() == "":
+            mb.showwarning("Error", "Primero escanee un boleto para aplicar la promoción")
+            self.limpiar_campos()
+            return
+
+        # Valida si el boleto está cobrado como perdido
+        TarifaPreferente = self.TarifaPreferente.get()
+        if TarifaPreferente == "Per":
+            mb.showerror("Error", "A los boletos cobrados como perdidos no se pueden aplicar promociones")
+            self.promo.set('')
+            self.promo_auxiliar.set('')
+            self.entrypromo.focus()
+            return
+
+        # Valida que solo se pueda aplicar una promoción por boleto
+        if TarifaPreferente not in ["Normal", "Danado"]:
+            mb.showerror("Error", "Solo se puede aplicar una promoción por boleto")
+            self.promo.set('')
+            self.entrypromo.focus()
+            return
+
+        text_promo = "Hospital"
+
+        # Valida si realmente se quiere aplicar la promoción
+        if mb.askyesno("Advertencia", f"¿Esta seguro de querer aplicar la promoción [{text_promo}] a este boleto?") is False:
+            return
+
+        # self.copia_fecha_salida.set('2024-01-23 22:36:00')
+
+        Salida = datetime.strptime(self.copia_fecha_salida.get(), '%Y-%m-%d %H:%M:%S')
+
+        hora_min = datetime.strptime('2024-01-26 20:00:00', '%Y-%m-%d %H:%M:%S')
+        hora_max = datetime.strptime('2024-01-26 23:59:59', '%Y-%m-%d %H:%M:%S')
+
+        importe = self.importe.get()
+
+        if hora_min <= Salida and Salida <= hora_max:
+            print("dentro del rango")
+            importe = 140
+
+        else:
+            mb.showerror("Error", "No se puede aplicar la promoción, esta fuera del rango de tiempo")
+            return
+
+        # Añade "Danado" a la descripción de la promoción si el boleto está marcado como "Danado"
+        if TarifaPreferente == "Danado":
+            text_promo = text_promo + TarifaPreferente
+
+        # Establece el tipo de promoción y muestra el importe actualizado
+        self.TarifaPreferente.set(text_promo)
+
+        # Establecer el importe y mostrarlo
+        self.mostrar_importe(importe)
 
     def get_date_limit(self, date_start:datetime, Tolerance:int) -> datetime:
         """
